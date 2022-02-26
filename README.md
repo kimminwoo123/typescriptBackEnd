@@ -37,14 +37,14 @@
 
   - 컬럼명 / 타입 / 제약조건
   - 강의id(lecture_id) / TEXT / PK
-  - 강의명(lecture_name) / TEXT / UNIQUE NOTNULL
-  - 카테고리(category) / TEXT / CHECK(web/app/game/algo/infra/db) NOTNULL
-  - 강의소개(lecture_introduction) / TEXT /
+  - 강의명(lecture_name) / TEXT / UNIQUE / NOTNULL
+  - 카테고리(category) / TEXT / CHECK(web/app/game/algo/infra/db) / NOTNULL
+  - 강의소개(lecture_introduction) / TEXT
   - 강의가격(lecture_price) / INT / NOTNULL
   - 수강생수(student_count) / INT / NOTNULL
   - 공개여부(open_flag) / BOOLEAN / NOTNULL
   - 강의생성일(lecture_create_date) / DATE / NOTNULL
-  - 강의수정일(lecture_modify_date) / DATE /
+  - 강의수정일(lecture_modify_date) / DATE
   - 강사id(instructor_id) / TEXT / FK
 
 - 학생(students)
@@ -59,7 +59,7 @@
   - 컬럼명 / 타입 / 제약조건
   - 강의id() / TEXT / PK FK
   - 수강생id() / TEXT / PK FK
-  - 신청일자() / DATE / DEFAULT(current_date) NOTNULL
+  - 신청일자() / DATE / DEFAULT(current_date) / NOTNULL
 
 # 3. 실행방법
 

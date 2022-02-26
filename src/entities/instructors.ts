@@ -1,22 +1,25 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany, ManyToOne } from "typeorm"
+import { Lectures } from './lectures'
 
 @Entity()
 export class Instructors extends BaseEntity {
     @PrimaryGeneratedColumn({
         type: 'int',
     })
-    instructorId: number
+    id: number
 
     @Column({
         type: 'text',
         nullable: false,
-        unique: true,
     })
-    instructorName: string
+    instructorName: String
 
     @Column({
         type: 'timestamptz',
         nullable: false,
     })
     registDate: Date
+
+    @OneToMany((type) => Lectures, lecture => lecture.instructors)
+    lectures: Lectures[]
 }

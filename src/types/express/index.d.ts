@@ -12,4 +12,6 @@ declare global {
             lecture_price?: Record<string, any>
         }
     }
+
+    type Category = 'web' | 'app' | 'game' | 'algo' | 'infra' | 'db'
 }
