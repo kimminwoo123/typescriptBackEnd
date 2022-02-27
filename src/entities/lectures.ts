@@ -1,13 +1,13 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne, OneToMany } from 'typeorm'
 import { Instructors } from './instructors'
-// import { CourseDetails } from './courseDetails'
+import { CourseDetails } from './courseDetails'
 
 @Entity()
 export class Lectures extends BaseEntity {
     @PrimaryGeneratedColumn({
         type: 'int',
     })
-    lectureId: number
+    id: number
 
     @Column({
         type: 'text',
@@ -59,9 +59,9 @@ export class Lectures extends BaseEntity {
     })
     lectureModifyDate: Date
 
-    @ManyToOne((type) => Instructors, instructor => instructor.lectures)
-    instructors: Instructors
+    @OneToMany(() => CourseDetails, courseDetail => courseDetail.lecture)
+    courseDetail: CourseDetails[]
 
-    // @OneToMany(() => CourseDetails, courseDetail => courseDetail.lectures)
-    // courseDetails: CourseDetails[]
+    @ManyToOne(() => Instructors, instructor => instructor.lectures)
+    instructors: Instructors
 }

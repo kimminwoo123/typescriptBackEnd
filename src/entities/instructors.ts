@@ -20,6 +20,6 @@ export class Instructors extends BaseEntity {
     })
     registDate: Date
 
-    @OneToMany((type) => Lectures, lecture => lecture.instructors)
+    @OneToMany(() => Lectures, lecture => lecture.instructors)
     lectures: Lectures[]
 }
