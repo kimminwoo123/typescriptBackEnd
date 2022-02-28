@@ -14,5 +14,5 @@ export class CourseDetails extends BaseEntity {
         type: 'timestamptz',
         nullable: false,
     })
-    registDate: Date
+    registDate: CourseDetailDto['registDate']
 }

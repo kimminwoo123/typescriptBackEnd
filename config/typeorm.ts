@@ -10,7 +10,7 @@ export default createConnection({
     password: "postgres",
     database: "postgres",
     entities: [
-        __dirname + "/../src/entities/*.ts"
+        __dirname + "/../src/domains/*.ts"
     ],
     synchronize: true,
     logging: true,

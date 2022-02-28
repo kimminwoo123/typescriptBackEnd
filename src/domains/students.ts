@@ -6,26 +6,26 @@ export class Students extends BaseEntity {
     @PrimaryGeneratedColumn({
         type: 'int',
     })
-    id: number
+    id: StudentDto['id']
 
     @Column({
         type: 'text',
         nullable: false,
     })
-    studentName: String
+    studentName: StudentDto['studentName']
 
     @Column({
         type: 'text',
         nullable: false,
         unique: true,
     })
-    studentEmail: String
+    studentEmail: StudentDto['studentEmail']
 
     @Column({
         type: 'timestamptz',
         nullable: false,
     })
-    registDate: Date
+    registDate: StudentDto['registDate']
 
     @OneToMany(() => CourseDetails, courseDetail => courseDetail.student)
     courseDetail: CourseDetails[]

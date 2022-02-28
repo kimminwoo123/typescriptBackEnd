@@ -7,57 +7,57 @@ export class Lectures extends BaseEntity {
     @PrimaryGeneratedColumn({
         type: 'int',
     })
-    id: number
+    id: LectureDto['id']
 
     @Column({
         type: 'text',
         nullable: false,
         unique: true,
     })
-    lectureName: String
+    lectureName: LectureDto['lectureName']
 
     @Column({
         type: 'text',
         nullable: false,
         // enum: []
     })
-    category: Category
+    category: LectureDto['category']
 
     @Column({
         type: 'text',
         nullable: true,
     })
-    lectureIntroduction: String
+    lectureIntroduction: LectureDto['lectureIntroduction']
 
     @Column({
         type: 'int',
         nullable: false,
     })
-    lecturePrice: number
+    lecturePrice: LectureDto['lecturePrice']
 
     @Column({
         type: 'int',
         nullable: false,
     })
-    studentCount: number
+    studentCount: LectureDto['studentCount']
 
     @Column({
         type: 'boolean',
         nullable: false,
     })
-    openFlag: Boolean
+    openFlag: LectureDto['openFlag']
 
     @Column({
         type: 'timestamptz',
         nullable: false,
     })
-    lectureCreateDate: Date
+    lectureCreateDate: LectureDto['lectureCreateDate']
 
     @Column({
         type: 'timestamptz',
         nullable: true,
     })
-    lectureModifyDate: Date
+    lectureModifyDate: LectureDto['lectureModifyDate']
 
     @OneToMany(() => CourseDetails, courseDetail => courseDetail.lecture)
     courseDetail: CourseDetails[]

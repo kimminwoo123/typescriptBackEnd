@@ -14,4 +14,47 @@ declare global {
     }
 
     type Category = 'web' | 'app' | 'game' | 'algo' | 'infra' | 'db'
+
+    type SortCondition = 'student_count' | 'lecture_create_date'
+
+    type LectureCondition = {
+        category: Category
+        search: string
+        sortCondition: SortCondition
+        page: number
+        pageLength: number
+    }
+
+    type InstructorDto = {
+        id: number
+        instructorName: string
+        registDate: Date
+    }
+
+    type LectureDto = {
+        id: number
+        lectureName: string
+        category: Category
+        lectureIntroduction: string
+        lecturePrice: number
+        studentCount: number
+        openFlag: Boolean
+        lectureCreateDate: Date
+        lectureModifyDate: Date
+    }
+
+    type StudentDto = {
+        id: number
+        studentName: string
+        studentEmail: string
+        registDate: Date
+    }
+
+    type CourseDetailDto = {
+        registDate: Date
+    }
+
+    type LectureListResult =
+        Pick<LectureDto, 'lectureName' | 'category' | 'lecturePrice' | 'studentCount' | 'lectureCreateDate'>
+        & InstructorDto['instructorName']
 }

@@ -27,3 +27,4 @@ console.log(inst.getInstructors())
 inst.setInstructors('qwer', '하루키', '20220224')
 
 console.log(inst.getInstructors())
+

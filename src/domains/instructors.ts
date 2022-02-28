@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany, ManyToOne } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany, } from "typeorm"
 import { Lectures } from './lectures'
 
 @Entity()
@@ -6,19 +6,19 @@ export class Instructors extends BaseEntity {
     @PrimaryGeneratedColumn({
         type: 'int',
     })
-    id: number
+    id: InstructorDto['id']
 
     @Column({
         type: 'text',
         nullable: false,
     })
-    instructorName: String
+    instructorName: InstructorDto['instructorName']
 
     @Column({
         type: 'timestamptz',
         nullable: false,
     })
-    registDate: Date
+    registDate?: InstructorDto['registDate']
 
     @OneToMany(() => Lectures, lecture => lecture.instructors)
     lectures: Lectures[]
