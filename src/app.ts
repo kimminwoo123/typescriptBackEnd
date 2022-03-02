@@ -33,8 +33,16 @@ app.get('/', async () => {
     inst.instructorName = 'test'
     inst.registDate = new Date()
 
+    const lecture: LectureCondition = {
+        category: 'web',
+        search: '얄팍한 코딩사전',
+        sortCondition: 'studentCount',
+        page: 1,
+        pageLength: 5
+    }
+
     const instructorsRepository = getCustomRepository(LecutresRepository)
-    const result = await instructorsRepository.findAll()
+    const result = await instructorsRepository.findConditionLecture(lecture)
     console.log(result)
 })
 

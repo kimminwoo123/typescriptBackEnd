@@ -6,6 +6,9 @@ import db from '../../db/pg'
 export class LectureService {
         constructor() { }
 
+
+
+
         /**
          * 강의 목록들을 조회한다.
          * 

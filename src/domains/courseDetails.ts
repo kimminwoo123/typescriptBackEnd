@@ -5,14 +5,23 @@ import { Students } from './students'
 @Entity()
 export class CourseDetails extends BaseEntity {
     @ManyToOne(() => Lectures, lecture => lecture.id, { primary: true })
-    lecture: Lectures
+    private lecture: Lectures
 
     @ManyToOne(() => Students, stduent => stduent.id, { primary: true })
-    student: Students
+    private student: Students
 
     @Column({
         type: 'timestamptz',
         nullable: false,
     })
-    registDate: CourseDetailDto['registDate']
+    private registDate?: CourseDetailDto['registDate']
+
+    public static createCourse(lecutre: Lectures, student: Students): CourseDetails {
+        const courseDetail = new CourseDetails()
+        courseDetail.lecture = lecutre
+        courseDetail.student = student
+        courseDetail.registDate = new Date()
+
+        return courseDetail
+    }
 }

@@ -15,7 +15,7 @@ declare global {
 
     type Category = 'web' | 'app' | 'game' | 'algo' | 'infra' | 'db'
 
-    type SortCondition = 'student_count' | 'lecture_create_date'
+    type SortCondition = 'studentCount' | 'lectureCreateDate'
 
     type LectureCondition = {
         category: Category
@@ -55,6 +55,7 @@ declare global {
     }
 
     type LectureListResult =
-        Pick<LectureDto, 'lectureName' | 'category' | 'lecturePrice' | 'studentCount' | 'lectureCreateDate'>
+        Pick<LectureDto,
+            'id' | 'lectureName' | 'category' | 'lecturePrice' | 'studentCount' | 'lectureCreateDate' | 'lectureIntroduction'>
         & InstructorDto['instructorName']
 }
