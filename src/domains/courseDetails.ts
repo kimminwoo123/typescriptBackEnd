@@ -16,11 +16,11 @@ export class CourseDetails extends BaseEntity {
     })
     registDate?: CourseDetailDto['registDate']
 
-    public static createCourse(lecture: Lectures, student: Students): CourseDetails {
+    public static createCourse(lecture: Lectures, student: Students, date: CourseDetails['registDate']): CourseDetails {
         const courseDetail = new CourseDetails()
         courseDetail.lecture = lecture
         courseDetail.student = student
-        courseDetail.registDate = new Date()
+        courseDetail.registDate = date
 
         return courseDetail
     }

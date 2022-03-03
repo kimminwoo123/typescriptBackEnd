@@ -1,9 +1,10 @@
 import { Router, Response, Request, NextFunction } from "express"
-import { Container, Service } from 'typedi'
-import { check, body, query, validationResult } from "express-validator"
+import { Container } from 'typedi'
+import { body, validationResult } from "express-validator"
 import { wrap } from '../util/index'
 import { StudentService } from "../services/studentService"
 import { Students } from '../domains/students'
+import { Lectures } from '../domains/lectures'
 
 const router = Router()
 
@@ -14,8 +15,8 @@ const studentService = Container.get(StudentService)
 * 
 */
 router.post('/',
-    body('student_name').notEmpty(),
-    body('email').notEmpty().isEmail(),
+    body('studentName').notEmpty(),
+    body('studentEmail').notEmpty().isEmail(),
     wrap(async (req: Request, res: Response, next: NextFunction) => {
         try {
             const validationError = validationResult(req)
@@ -25,158 +26,77 @@ router.post('/',
                 return res.status(400).send('validation error')
             }
 
-            const studentName = req?.body.student_name
-            const email = req?.body.email
+            const studentName = req?.body.studentName
+            const email = req?.body.studentEmail
 
-            const student: Students = Students.createStudent(studentName, email)
+            const student: Students = Students.createStudent(undefined, studentName, email, new Date())
 
             const registStudent: Students = await studentService.studentRegistration(student)
 
-            return res.status(200).send(registStudent)
+            return res.status(201).send(registStudent)
         } catch (e) {
-            return res.status(500).send({ message: '내부오류' })
+            return res.status(500).send({ message: '서버오류' })
         }
     })
 )
-// router.post('/',
-//     body('student_id').notEmpty(),
-//     body('student_name').notEmpty(),
-//     body('email').notEmpty().isEmail(),
-//     (req: Request, res: Response, next: NextFunction) => {
-//         try {
-//             const validationeError = validationResult(req)
-
-//             // validation
-//             if (!validationeError.isEmpty()) {
-//                 return res.status(400).send('validation error')
-//             }
-
-//             const id = req?.body.student_id
-//             const studentName = req?.body.student_name
-//             const email = req?.body.email
-
-//             if (typeof id === 'string' && typeof email === 'string') {
-//                 studentService.checkIdEmail(id, email) // 학생 id, eamil 확인
-//                     .then((result) => {
-//                         if (result) {
-//                             studentService.createStudent(id, studentName, email)
-//                                 .then((rowCount) => {
-//                                     if (rowCount) {
-//                                         return res.status(201).send(`가입 완료`)
-//                                     } else {
-//                                         return res.status(500).send({ message: '가입 실패' })
-//                                     }
-//                                 })
-//                                 .catch((err) => {
-//                                     return res.status(500).send({ message: '가입 실패' })
-//                                 })
-//                         } else {
-//                             return res.status(404).send({ message: 'id가 없거나 강의 이름이 중복입니다.' })
-//                         }
-//                     })
-//                     .catch((err) => {
-//                         return res.status(500).send({ message: '학생 id,email 중복체크 오류' })
-//                     })
-//             } else {
-//                 return res.status(500).send({ message: 'type check 오류' })
-//             }
-//         } catch (e) {
-//             return res.status(500).send({ message: '오류' })
-//         }
-//     }
-// )
 
 /**
 * 수강생 탈퇴
 * 
 */
 router.delete('/',
-    body('student_id').notEmpty(),
-    (req: Request, res: Response, next: NextFunction) => {
+    body('studentEmail').notEmpty().isEmail(),
+    wrap(async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const validationeError = validationResult(req)
+            const validationError = validationResult(req)
 
             // validation
-            if (!validationeError.isEmpty()) {
+            if (!validationError.isEmpty()) {
                 return res.status(400).send('validation error')
             }
 
-            const studentId = req?.body.student_id
+            const studentEmail = req?.body.studentEmail
 
-            if (typeof studentId === 'string') {
-                studentService.checkId(studentId)
-                    .then((result) => {
-                        if (!result) {
-                            studentService.deleteStudent(studentId)
-                                .then((rowCount) => {
-                                    if (rowCount) {
-                                        return res.status(204).send('수강생 탈퇴 완료')
-                                    } else {
-                                        return res.status(500).send({ message: '수강생 탈퇴 실패' })
-                                    }
-                                })
-                                .catch((err) => {
-                                    return res.status(500).send({ message: '수강생 탈퇴 실패' })
+            const student: Students = Students.createStudent(undefined, undefined, studentEmail)
 
-                                })
-                        } else {
-                            return res.status(404).send({ message: '수강생 id가 없습니다.' })
-                        }
-                    })
-                    .catch((err) => {
-                        return res.status(500).send({ message: '수강생 id체크 오류' })
-                    })
-            } else {
-                return res.status(500).send({ message: 'type check 오류' })
-            }
+            await studentService.studentWithdrawal(student)
+
+            return res.status(204).send({ message: '탈퇴완료' })
         } catch (e) {
             return res.status(500).send({ message: '서버오류' })
         }
-    }
+    })
 )
 
 /**
 * 수강생 강의 신청
 * 
 */
-router.post('/course_req',
-    body('data').isArray(),
-    body('data.*.lecture_id').notEmpty(),
-    body('data.*.student_id').notEmpty(),
-    (req: Request, res: Response, next: NextFunction) => {
+router.post('/courseRequest',
+    body('lectureId').notEmpty(),
+    body('studentId').notEmpty(),
+    wrap(async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const validationeError = validationResult(req)
+            const validationError = validationResult(req)
 
             // validation
-            if (!validationeError.isEmpty()) {
+            if (!validationError.isEmpty()) {
                 return res.status(400).send('validation error')
             }
 
-            const lectureIdList = req.body?.data?.map((v: any) => v.lecture_id)
-            const studnetIdList = req.body?.data?.map((v: any) => v.student_id)
+            const lectureId = req?.body.lectureId
+            const studentId = req?.body.studentId
 
-            studentService.checkCourese(lectureIdList, studnetIdList, req)
-                .then((result) => {
-                    if (result.length) {
-                        studentService.reqCourese(result)
-                            .then((rows) => {
-                                return res.status(201).send(rows)
-                            })
-                            .catch((err) => {
-                                return res.status(400).send({ message: '수강 신청 실패, 잘못된 id거나 이미 수강중입니다.' })
-                            })
-                    } else {
-                        return res.status(404).send({ message: '신청할 id가 없습니다.' })
-                    }
-                })
-                .catch((err) => {
-                    return res.status(500).send({ message: 'id체크 오류' })
-                })
+            const lecture: Lectures = Lectures.createLecture(lectureId)
+            const student: Students = Students.createStudent(studentId)
 
+            await studentService.lectureRegistration(student, lecture)
+
+            return res.status(201).send({ message: '수강신청 완료' })
         } catch (e) {
             return res.status(500).send({ message: '서버오류' })
         }
-    }
+    })
 )
 
 export { router }
