@@ -1,3 +1,10 @@
+### 강의 플랫폼 backEnd 개발
+
+## 목표
+
+- 도메인 주도개발(DDD)을 구현
+- unit Test 마스터
+
 # 1. api 설계
 
 - URI는 명사를사용
@@ -72,3 +79,8 @@ Window 환경
 - ts-node createTable.ts (테이블 및 데이터생성)
 - npm run start (서버 실행)
 - npm run test (테스트코드 실행)
+
+2022/03/03
+StudentsRepository에서 repository API가 재대로 작동하지 않음 - createQueryBuilder()를 사용하여 생성
+수강생 가입, 탈퇴, 수강신청 기능 개발
+TODO studentService test 코드작성, ErrorState 개발

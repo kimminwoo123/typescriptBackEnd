@@ -4,7 +4,7 @@ import { router as lecturesRouter } from "./controllers/lectureController"
 import { router as studentRouter } from "./controllers/studentController"
 
 import { EntityManager, EntityRepository, getCustomRepository } from 'typeorm'
-import { LecutresRepository } from './repositories/lecturesRepository'
+import { LecturesRepository } from './repositories/lecturesRepository'
 import { InstructorsRepository } from './repositories/instructorsRepository'
 import { Instructors } from './domains/instructors'
 import dayjs from "dayjs"
@@ -29,21 +29,21 @@ app.get('/', async () => {
     // const lr = getCustomRepository(LecutresRepository)
     // lr.findCondition(condition)
 
-    const inst = new Instructors()
-    inst.instructorName = 'test'
-    inst.registDate = new Date()
+    // const inst = new Instructors()
+    // inst.instructorName = 'test'
+    // inst.registDate = new Date()
 
-    const lecture: LectureCondition = {
-        category: 'web',
-        search: '얄팍한 코딩사전',
-        sortCondition: 'studentCount',
-        page: 1,
-        pageLength: 5
-    }
+    // const lecture: LectureCondition = {
+    //     category: 'web',
+    //     search: '얄팍한 코딩사전',
+    //     sortCondition: 'studentCount',
+    //     page: 1,
+    //     pageLength: 5
+    // }
 
-    const instructorsRepository = getCustomRepository(LecutresRepository)
-    const result = await instructorsRepository.findConditionLecture(lecture)
-    console.log(result)
+    // const instructorsRepository = getCustomRepository(LecutresRepository)
+    // const result = await instructorsRepository.findConditionLecture(lecture)
+    // console.log(result)
 })
 
 export default app

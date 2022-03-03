@@ -1,18 +1,31 @@
-import { EntityManager, EntityRepository, AbstractRepository } from 'typeorm'
+import { createQueryBuilder, EntityRepository, Repository } from 'typeorm'
 import { Lectures } from '../domains/lectures'
 
 @EntityRepository(Lectures)
-export class LecturesRepository extends AbstractRepository<Lectures> {
-        // public async save(student: Students): Promise<void> {
-        //     await this.em.save(student)
-        // }
+export class LecturesRepository extends Repository<Lectures> {
+        constructor() {
+                super()
+        }
 
-        // public async findOne(student: Students): Promise<Students | undefined> {
-        //     return await this.em.findOne(Students, { id: student.id })
-        // }
-
-        public async findOne(id: Lectures['id']): Promise<Lectures | undefined> {
-                return await this.manager.findOne(Lectures)
+        public async findById(id: Lectures['id']): Promise<Lectures | undefined> {
+                try {
+                        return await createQueryBuilder()
+                                .select(['Lectures.id',
+                                        'Lectures.lectureName',
+                                        'Lectures.category',
+                                        'Lectures.lectureIntroduction',
+                                        'Lectures.lecturePrice',
+                                        'Lectures.studentCount',
+                                        'Lectures.openFlag',
+                                        'Lectures.lectureCreateDate',
+                                        'Lectures.lectureModifyDate',])
+                                .from(Lectures, 'Lectures')
+                                .where('Lectures.id = :id', { id })
+                                .getOne()
+                } catch (error) {
+                        console.log(error)
+                        throw new Error('LecturesRepository findById 오류')
+                }
         }
 
         public async findConditionLecture(lectureCondition: LectureCondition): Promise<LectureListResult[]> {

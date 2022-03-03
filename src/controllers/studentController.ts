@@ -1,14 +1,15 @@
 import { Router, Response, Request, NextFunction } from "express"
-import { Container } from 'typedi'
 import { body, validationResult } from "express-validator"
 import { wrap } from '../util/index'
 import { StudentService } from "../services/studentService"
+import { StudentsRepository } from '../repositories/studentsRepository'
+import { LecturesRepository } from '../repositories/lecturesRepository'
+import { CourseDetailsRepository } from '../repositories/courseDetailsRepository'
 import { Students } from '../domains/students'
 import { Lectures } from '../domains/lectures'
 
 const router = Router()
-
-const studentService = Container.get(StudentService)
+const studentService = new StudentService(new StudentsRepository(), new LecturesRepository(), new CourseDetailsRepository())
 
 /**
 * 수강생 가입
@@ -26,15 +27,16 @@ router.post('/',
                 return res.status(400).send('validation error')
             }
 
-            const studentName = req?.body.studentName
-            const email = req?.body.studentEmail
+            const studentName = req?.body?.studentName
+            const email = req?.body?.studentEmail
 
             const student: Students = Students.createStudent(undefined, studentName, email, new Date())
 
             const registStudent: Students = await studentService.studentRegistration(student)
 
-            return res.status(201).send(registStudent)
-        } catch (e) {
+            return res.status(201).send({ message: '가입완료', data: registStudent })
+        } catch (error) {
+            console.log(error)
             return res.status(500).send({ message: '서버오류' })
         }
     })
@@ -55,14 +57,15 @@ router.delete('/',
                 return res.status(400).send('validation error')
             }
 
-            const studentEmail = req?.body.studentEmail
+            const studentEmail = req?.body?.studentEmail
 
             const student: Students = Students.createStudent(undefined, undefined, studentEmail)
 
-            await studentService.studentWithdrawal(student)
+            const deleteStudent: Students = await studentService.studentWithdrawal(student)
 
-            return res.status(204).send({ message: '탈퇴완료' })
-        } catch (e) {
+            return res.status(204).send({ message: '탈퇴완료', data: deleteStudent })
+        } catch (error) {
+            console.log(error)
             return res.status(500).send({ message: '서버오류' })
         }
     })
@@ -84,8 +87,8 @@ router.post('/courseRequest',
                 return res.status(400).send('validation error')
             }
 
-            const lectureId = req?.body.lectureId
-            const studentId = req?.body.studentId
+            const lectureId = req?.body?.lectureId
+            const studentId = req?.body?.studentId
 
             const lecture: Lectures = Lectures.createLecture(lectureId)
             const student: Students = Students.createStudent(studentId)
@@ -93,7 +96,8 @@ router.post('/courseRequest',
             await studentService.lectureRegistration(student, lecture)
 
             return res.status(201).send({ message: '수강신청 완료' })
-        } catch (e) {
+        } catch (error) {
+            console.log(error)
             return res.status(500).send({ message: '서버오류' })
         }
     })

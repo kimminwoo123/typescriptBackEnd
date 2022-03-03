@@ -1,6 +1,4 @@
 import { Router, Response, Request, NextFunction } from "express"
-import { Service } from "typedi"
-import db from '../../db/pg'
 import { StudentsRepository } from '../repositories/studentsRepository'
 import { LecturesRepository } from '../repositories/lecturesRepository'
 import { CourseDetailsRepository } from '../repositories/courseDetailsRepository'
@@ -9,7 +7,6 @@ import { Students } from '../domains/students'
 import { Lectures } from '../domains/lectures'
 import { CourseDetails } from '../domains/courseDetails'
 
-@Service()
 export class StudentService {
         constructor(
                 private readonly studentRepository: StudentsRepository,
@@ -22,13 +19,17 @@ export class StudentService {
          * 
          */
         public async studentRegistration(student: Students): Promise<Students> {
-                const checkEmailStudent: Students | undefined = await this.checkEmailStudent(student.studentEmail)
+                try {
+                        const checkEmailStudent: Students | undefined = await this.checkEmailStudent(student.studentEmail)
 
-                if (checkEmailStudent != null) {
-                        throw new Error('email 중복')
-                } else {
-                        this.studentRepository.save(student)
-                        return student
+                        if (checkEmailStudent == null) {
+                                return await this.studentRepository.saveByStudent(student)
+                        } else {
+                                throw new Error('email 중복')
+                        }
+                } catch (error) {
+                        console.log(error)
+                        throw new Error('StudentService studentRegistration 오류')
                 }
         }
 
@@ -37,13 +38,17 @@ export class StudentService {
          * 
          */
         public async studentWithdrawal(student: Students): Promise<Students> {
-                const studentIdCheck: Students | undefined = await this.checkIdStudent(student.id)
+                try {
+                        const checkStudent: Students | undefined = await this.checkEmailStudent(student.studentEmail)
 
-                if (studentIdCheck == null) {
-                        throw new Error('존재하지 않는 id입니다')
-                } else {
-                        await this.studentRepository.delete(student.id)
-                        return student
+                        if (checkStudent == null) {
+                                throw new Error('존재하지 않는 id입니다')
+                        } else {
+                                return await this.studentRepository.deleteById(checkStudent.id)
+                        }
+                } catch (error) {
+                        console.log(error)
+                        throw new Error('StudentService studentWithdrawal 오류')
                 }
         }
 
@@ -51,37 +56,62 @@ export class StudentService {
          * 수강생 강의신청 new
          * 
          */
-        public async lectureRegistration(student: Students, lecture: Lectures) {
-                const studentIdCheck: Students | undefined = await this.checkIdStudent(student.id)
-                const lectureIdCheck: Lectures | undefined = await this.checkIdLecture(lecture.id)
+        public async lectureRegistration(student: Students, lecture: Lectures): Promise<CourseDetails> {
+                try {
+                        const studentCheck: Students | undefined = await this.checkIdStudent(student.id)
+                        const lectureCheck: Lectures | undefined = await this.checkIdLecture(lecture.id)
 
-                if (studentIdCheck == null) {
-                        throw new Error('존재하지 않는 학생 id입니다')
+                        if (studentCheck == null) {
+                                throw new Error('존재하지 않는 학생 id입니다')
+                        }
+
+                        if (lectureCheck == null) {
+                                throw new Error('존재하지 않는 강의 id입니다')
+                        }
+
+                        // 강의오픈 false일때
+                        if (lectureCheck.openFlag === false) {
+                                throw new Error('신청할 수 없는 강의입니다')
+                        }
+
+                        const course: CourseDetails = CourseDetails.createCourse(lecture, student, new Date())
+                        const courseCheck = await this.courseDetailsRepository.findById(course)
+
+                        if (courseCheck != null) {
+                                throw new Error('이미 강의신청이 되어 있습니다.')
+                        }
+
+                        return await this.courseDetailsRepository.saveByCourse(course)
+                } catch (error) {
+                        console.log(error)
+                        throw new Error('StudentService lectureRegistration 오류')
                 }
-
-                if (lectureIdCheck == null) {
-                        throw new Error('존재하지 않는 강의 id입니다')
-                }
-
-                const course: CourseDetails = CourseDetails.createCourse(lecture, student, new Date())
-                const courseCheck = await this.courseDetailsRepository.findOne(course)
-
-                if (courseCheck != null) {
-                        throw new Error('이미 강의신청이 되어 있습니다.')
-                }
-
-                await this.courseDetailsRepository.save(course)
         }
 
         private async checkEmailStudent(email: Students['studentEmail']): Promise<Students | undefined> {
-                return await this.studentRepository.findByEmail(email)
+                try {
+                        return await this.studentRepository.findByEmail(email)
+                } catch (error) {
+                        console.log(error)
+                        throw new Error('StudentService checkEmailStudent 오류')
+                }
         }
 
         private async checkIdStudent(id: Students['id']): Promise<Students | undefined> {
-                return await this.studentRepository.findOne(id)
+                try {
+                        return await this.studentRepository.findById(id)
+                } catch (error) {
+                        console.log(error)
+                        throw new Error('StudentService checkIdStudent 오류')
+                }
         }
 
         private async checkIdLecture(id: Lectures['id']): Promise<Lectures | undefined> {
-                return await this.lecturesRepository.findOne(id)
+                try {
+                        return await this.lecturesRepository.findById(id)
+                } catch (error) {
+                        console.log(error)
+                        throw new Error('StudentService checkIdLecture 오류')
+                }
         }
 }
