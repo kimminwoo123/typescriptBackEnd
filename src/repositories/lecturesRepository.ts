@@ -2,7 +2,7 @@ import { EntityManager, EntityRepository, AbstractRepository } from 'typeorm'
 import { Lectures } from '../domains/lectures'
 
 @EntityRepository(Lectures)
-export class LecutresRepository extends AbstractRepository<Lectures> {
+export class LecturesRepository extends AbstractRepository<Lectures> {
         // public async save(student: Students): Promise<void> {
         //     await this.em.save(student)
         // }
@@ -15,9 +15,9 @@ export class LecutresRepository extends AbstractRepository<Lectures> {
                 return await this.manager.findOne(Lectures)
         }
 
-        public async findConditionLecture(lecturecondition: LectureCondition): Promise<LectureListResult[]> {
-                const offset: number = (lecturecondition.page - 1) * lecturecondition.pageLength
-                const limit: number = lecturecondition.page * lecturecondition.pageLength
+        public async findConditionLecture(lectureCondition: LectureCondition): Promise<LectureListResult[]> {
+                const offset: number = (lectureCondition.page - 1) * lectureCondition.pageLength
+                const limit: number = lectureCondition.page * lectureCondition.pageLength
 
                 return await this.manager.createQueryBuilder()
                         .select(['i.instructor_name "instructorName"',
@@ -30,15 +30,15 @@ export class LecutresRepository extends AbstractRepository<Lectures> {
                         .from(Lectures, 'l')
                         .innerJoin('l.instructors', 'i')
                         .where('l.open_flag = true')
-                        .andWhere('l.category = :category', { category: lecturecondition.category })
-                        .andWhere('(i.instructor_name = :search or l.lecture_name = :search )', { search: lecturecondition.search })
-                        .orderBy(`${lecturecondition.sortCondition === 'studentCount' ? 'student_count' : 'lecture_create_date'}`, 'DESC')
+                        .andWhere('l.category = :category', { category: lectureCondition.category })
+                        .andWhere('(i.instructor_name = :search or l.lecture_name = :search )', { search: lectureCondition.search })
+                        .orderBy(`${lectureCondition.sortCondition === 'studentCount' ? 'student_count' : 'lecture_create_date'}`, 'DESC')
                         .offset(offset)
                         .limit(limit)
                         .getRawMany()
         }
 
-        public async findLecutreDetail() {
+        public async findLectureDetail() {
 
         }
 }

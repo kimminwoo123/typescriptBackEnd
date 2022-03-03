@@ -29,4 +29,13 @@ export class Students extends BaseEntity {
 
     @OneToMany(() => CourseDetails, courseDetail => courseDetail.student)
     courseDetail: CourseDetails[]
+
+    public static createStudent(name: Students['studentName'], email: Students['studentEmail']): Students {
+        const student = new Students()
+        student.studentName = name
+        student.studentEmail = email
+        student.registDate = new Date()
+
+        return student
+    }
 }

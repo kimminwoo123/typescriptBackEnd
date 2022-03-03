@@ -1,7 +1,9 @@
 import { Router, Response, Request, NextFunction } from "express"
 import { Container, Service } from 'typedi'
 import { check, body, query, validationResult } from "express-validator"
+import { wrap } from '../util/index'
 import { StudentService } from "../services/studentService"
+import { Students } from '../domains/students'
 
 const router = Router()
 
@@ -12,52 +14,77 @@ const studentService = Container.get(StudentService)
 * 
 */
 router.post('/',
-    body('student_id').notEmpty(),
     body('student_name').notEmpty(),
     body('email').notEmpty().isEmail(),
-    (req: Request, res: Response, next: NextFunction) => {
+    wrap(async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const validationeError = validationResult(req)
+            const validationError = validationResult(req)
 
             // validation
-            if (!validationeError.isEmpty()) {
+            if (!validationError.isEmpty()) {
                 return res.status(400).send('validation error')
             }
 
-            const id = req?.body.student_id
             const studentName = req?.body.student_name
             const email = req?.body.email
 
-            if (typeof id === 'string' && typeof email === 'string') {
-                studentService.checkIdEmail(id, email) // 학생 id, eamil 확인
-                    .then((result) => {
-                        if (result) {
-                            studentService.createStudent(id, studentName, email)
-                                .then((rowCount) => {
-                                    if (rowCount) {
-                                        return res.status(201).send(`가입 완료`)
-                                    } else {
-                                        return res.status(500).send({ message: '가입 실패' })
-                                    }
-                                })
-                                .catch((err) => {
-                                    return res.status(500).send({ message: '가입 실패' })
-                                })
-                        } else {
-                            return res.status(404).send({ message: 'id가 없거나 강의 이름이 중복입니다.' })
-                        }
-                    })
-                    .catch((err) => {
-                        return res.status(500).send({ message: '학생 id,email 중복체크 오류' })
-                    })
-            } else {
-                return res.status(500).send({ message: 'type check 오류' })
-            }
+            const student: Students = Students.createStudent(studentName, email)
+
+            const registStudent: Students = await studentService.studentRegistration(student)
+
+            return res.status(200).send(registStudent)
         } catch (e) {
-            return res.status(500).send({ message: '오류' })
+            return res.status(500).send({ message: '내부오류' })
         }
-    }
+    })
 )
+// router.post('/',
+//     body('student_id').notEmpty(),
+//     body('student_name').notEmpty(),
+//     body('email').notEmpty().isEmail(),
+//     (req: Request, res: Response, next: NextFunction) => {
+//         try {
+//             const validationeError = validationResult(req)
+
+//             // validation
+//             if (!validationeError.isEmpty()) {
+//                 return res.status(400).send('validation error')
+//             }
+
+//             const id = req?.body.student_id
+//             const studentName = req?.body.student_name
+//             const email = req?.body.email
+
+//             if (typeof id === 'string' && typeof email === 'string') {
+//                 studentService.checkIdEmail(id, email) // 학생 id, eamil 확인
+//                     .then((result) => {
+//                         if (result) {
+//                             studentService.createStudent(id, studentName, email)
+//                                 .then((rowCount) => {
+//                                     if (rowCount) {
+//                                         return res.status(201).send(`가입 완료`)
+//                                     } else {
+//                                         return res.status(500).send({ message: '가입 실패' })
+//                                     }
+//                                 })
+//                                 .catch((err) => {
+//                                     return res.status(500).send({ message: '가입 실패' })
+//                                 })
+//                         } else {
+//                             return res.status(404).send({ message: 'id가 없거나 강의 이름이 중복입니다.' })
+//                         }
+//                     })
+//                     .catch((err) => {
+//                         return res.status(500).send({ message: '학생 id,email 중복체크 오류' })
+//                     })
+//             } else {
+//                 return res.status(500).send({ message: 'type check 오류' })
+//             }
+//         } catch (e) {
+//             return res.status(500).send({ message: '오류' })
+//         }
+//     }
+// )
 
 /**
 * 수강생 탈퇴

@@ -2,7 +2,7 @@ import { Router, Response, Request, NextFunction } from "express"
 import { Service } from "typedi"
 import db from '../../db/pg'
 import { StudentsRepository } from '../repositories/studentsRepository'
-import { LecutresRepository } from '../repositories/lecturesRepository'
+import { LecturesRepository } from '../repositories/lecturesRepository'
 import { CourseDetailsRepository } from '../repositories/courseDetailsRepository'
 
 import { Students } from '../domains/students'
@@ -12,40 +12,37 @@ import { CourseDetails } from '../domains/courseDetails'
 @Service()
 export class StudentService {
         constructor(
-                private stdentRepository: StudentsRepository,
-                private lecutresRepository: LecutresRepository,
-                private courseDetailsRepository: CourseDetailsRepository,
+                private readonly studentRepository: StudentsRepository,
+                private readonly lecturesRepository: LecturesRepository,
+                private readonly courseDetailsRepository: CourseDetailsRepository,
         ) { }
-
-
 
         /**
          * 수강생 가입 new
          * 
          */
         public async studentRegistration(student: Students): Promise<Students> {
-                const checkEmailStudent: Students | undefined = await this.stdentRepository.findByEmail(student.studentEmail)
+                const checkEmailStudent: Students | undefined = await this.checkEmailStudent(student.studentEmail)
 
                 if (checkEmailStudent != null) {
                         throw new Error('email 중복')
                 } else {
-                        this.stdentRepository.save(student)
+                        this.studentRepository.save(student)
                         return student
                 }
         }
-
 
         /**
          * 수강생 탈퇴 new
          * 
          */
         public async studentWithdrawal(student: Students): Promise<Students> {
-                const idCheck: Students | undefined = await this.stdentRepository.findOne(student.id)
+                const studentIdCheck: Students | undefined = await this.checkIdStudent(student.id)
 
-                if (idCheck == null) {
+                if (studentIdCheck == null) {
                         throw new Error('존재하지 않는 id입니다')
                 } else {
-                        await this.stdentRepository.delete(student.id)
+                        await this.studentRepository.delete(student.id)
                         return student
                 }
         }
@@ -55,14 +52,14 @@ export class StudentService {
          * 
          */
         public async lectureRegistration(student: Students, lecture: Lectures) {
-                const studnetIdCheck: Students | undefined = await this.stdentRepository.findOne(student.id)
-                const lecutreIdCheck: Lectures | undefined = await this.lecutresRepository.findOne(lecture.id)
+                const studentIdCheck: Students | undefined = await this.checkIdStudent(student.id)
+                const lectureIdCheck: Lectures | undefined = await this.checkIdLecture(lecture.id)
 
-                if (studnetIdCheck == null) {
+                if (studentIdCheck == null) {
                         throw new Error('존재하지 않는 학생 id입니다')
                 }
 
-                if (lecutreIdCheck == null) {
+                if (lectureIdCheck == null) {
                         throw new Error('존재하지 않는 강의 id입니다')
                 }
 
@@ -76,6 +73,17 @@ export class StudentService {
                 await this.courseDetailsRepository.save(course)
         }
 
+        private async checkEmailStudent(email: Students['studentEmail']): Promise<Students | undefined> {
+                return await this.studentRepository.findByEmail(email)
+        }
+
+        private async checkIdStudent(id: Students['id']): Promise<Students | undefined> {
+                return await this.studentRepository.findOne(id)
+        }
+
+        private async checkIdLecture(id: Lectures['id']): Promise<Lectures | undefined> {
+                return await this.lecturesRepository.findOne(id)
+        }
 
         // /**
         // * 학생 id 확인
