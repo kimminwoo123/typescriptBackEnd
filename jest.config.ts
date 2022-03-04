@@ -14,6 +14,15 @@ export default {
   // cacheDirectory: "C:\\Users\\mw064\\AppData\\Local\\Temp\\jest",
 
   // Automatically clear mock calls, instances and results before every test
+
+  "testMatch": [
+    "**/__tests__/**/*.+(ts|tsx|js)",
+    "**/?(*.)+(spec|test).+(ts|tsx|js)"
+  ],
+  "transform": {
+    "^.+\\.(ts|tsx)$": "ts-jest"
+  },
+
   clearMocks: true,
 
   // Indicates whether the coverage information should be collected while executing the test

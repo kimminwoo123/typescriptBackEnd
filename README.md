@@ -84,3 +84,7 @@ Window 환경
 StudentsRepository에서 repository API가 재대로 작동하지 않음 - createQueryBuilder()를 사용하여 생성
 수강생 가입, 탈퇴, 수강신청 기능 개발
 TODO studentService test 코드작성, ErrorState 개발
+
+2022/03/04
+typescript Jest config
+날짜라이브러리 js-joda로 변경 - timeZone 지원, 직관적 API

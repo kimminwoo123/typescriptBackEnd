@@ -3,6 +3,9 @@ import { CourseDetails } from '../domains/courseDetails'
 
 @EntityRepository(CourseDetails)
 export class CourseDetailsRepository extends Repository<CourseDetails> {
+    constructor() {
+        super()
+    }
 
     public async saveByCourse(course: CourseDetails): Promise<CourseDetails> {
         try {
