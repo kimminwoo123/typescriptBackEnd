@@ -2,7 +2,6 @@ import { Router, Response, Request, NextFunction } from "express"
 import { StudentsRepository } from '../repositories/studentsRepository'
 import { LecturesRepository } from '../repositories/lecturesRepository'
 import { CourseDetailsRepository } from '../repositories/courseDetailsRepository'
-
 import { Students } from '../domains/students'
 import { Lectures } from '../domains/lectures'
 import { CourseDetails } from '../domains/courseDetails'

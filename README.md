@@ -87,4 +87,7 @@ TODO studentService test 코드작성, ErrorState 개발
 
 2022/03/04
 typescript Jest config
-날짜라이브러리 js-joda로 변경 - timeZone 지원, 직관적 API
+studentService test 코드작성완료
+TODO lectureService 개발
+
+2022/03/05

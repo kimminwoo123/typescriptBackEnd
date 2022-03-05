@@ -1,66 +1,69 @@
 import { Router, Response, Request, NextFunction } from "express"
-import { Service } from "typedi"
+import { LecturesRepository } from '../repositories/lecturesRepository'
+import { LectureRequest } from '../dto/lectureRequest'
 import db from '../../db/pg'
 
-@Service()
 export class LectureService {
-        constructor() { }
-
-
-
+        constructor(
+                private readonly lecturesRepository: LecturesRepository
+        ) { }
 
         /**
          * 강의 목록들을 조회한다.
          * 
          */
-        public async lectureList(search: string, page: number, sort: string, category: string) {
-                try {
-                        const pageLength = 3 // 한페이지당 row 수
 
-                        const query = `
-                                with base as (
-                                select  l.lecture_id ,
-                                        l.category ,
-                                        l.lecture_name ,
-                                        i.instructor_name ,
-                                        l.lecture_price ,
-                                        l.student_count ,
-                                        l.lecture_create_date,
-                                        cd.student_id 
-                                from lectures l join instructors i 
-                                                on l.instructor_id = i.instructor_id
-                                        left join course_details cd 
-                                                on cd.lecture_id = l.lecture_id
-                                        where 1 = 1 ${category === 'all' ? '' : `and category = '${category}'`}
-                                                and open_flag = true
-                                                and (i.instructor_name = '${search}'
-                                                or l.lecture_name = '${search}'
-                                                or cd.student_id = '${search}')
-                                        )
-                                select * 
-                                from (
-                                select category, lecture_id, instructor_name, lecture_price, student_count, lecture_create_date, lecture_name
-                                from (
-                                        select base.category , base.lecture_id , base.instructor_name, base.lecture_price, base.student_count, base.lecture_create_date, base.lecture_name,
-                                                row_number() over(partition by base.lecture_id order by base.lecture_create_date desc) as rank
-                                        from base 
-                                        ) base2
-                                where base2.rank = 1
-                                order by ${sort} desc 
-                                        ) base3
-                                offset ${(page - 1) * pageLength}
-                                limit ${page * pageLength}
-                                ;
-                                `
-
-                        const lectureList = await db.query(query)
-
-                        return lectureList.rows
-                } catch (error) {
-                        // console.log(error)
-                        throw Error
-                }
+        public async conditionSearch(lectureRequest: LectureRequest) {
+                return await this.lecturesRepository.findConditionSearch(lectureRequest)
         }
+        // public async lectureList(search: string, page: number, sort: string, category: string) {
+        //         try {
+        //                 const pageLength = 3 // 한페이지당 row 수
+
+        //                 const query = `
+        //                         with base as (
+        //                         select  l.lecture_id ,
+        //                                 l.category ,
+        //                                 l.lecture_name ,
+        //                                 i.instructor_name ,
+        //                                 l.lecture_price ,
+        //                                 l.student_count ,
+        //                                 l.lecture_create_date,
+        //                                 cd.student_id 
+        //                         from lectures l join instructors i 
+        //                                         on l.instructor_id = i.instructor_id
+        //                                 left join course_details cd 
+        //                                         on cd.lecture_id = l.lecture_id
+        //                                 where 1 = 1 ${category === 'all' ? '' : `and category = '${category}'`}
+        //                                         and open_flag = true
+        //                                         and (i.instructor_name = '${search}'
+        //                                         or l.lecture_name = '${search}'
+        //                                         or cd.student_id = '${search}')
+        //                                 )
+        //                         select * 
+        //                         from (
+        //                         select category, lecture_id, instructor_name, lecture_price, student_count, lecture_create_date, lecture_name
+        //                         from (
+        //                                 select base.category , base.lecture_id , base.instructor_name, base.lecture_price, base.student_count, base.lecture_create_date, base.lecture_name,
+        //                                         row_number() over(partition by base.lecture_id order by base.lecture_create_date desc) as rank
+        //                                 from base 
+        //                                 ) base2
+        //                         where base2.rank = 1
+        //                         order by ${sort} desc 
+        //                                 ) base3
+        //                         offset ${(page - 1) * pageLength}
+        //                         limit ${page * pageLength}
+        //                         ;
+        //                         `
+
+        //                 const lectureList = await db.query(query)
+
+        //                 return lectureList.rows
+        //         } catch (error) {
+        //                 // console.log(error)
+        //                 throw Error
+        //         }
+        // }
 
         /**
          * 강의 목록 상세조회 한다.

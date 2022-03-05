@@ -59,3 +59,5 @@ declare global {
             'id' | 'lectureName' | 'category' | 'lecturePrice' | 'studentCount' | 'lectureCreateDate' | 'lectureIntroduction'>
         & InstructorDto['instructorName']
 }
+
+export type { LectureListResult }

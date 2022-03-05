@@ -1,5 +1,7 @@
 import { LecturesRepository } from '../src/repositories/lecturesRepository'
 import { Lectures } from '../src/domains/lectures'
+import { LectureRequest } from '../src/dto/lectureRequest'
+import type { LectureListResult } from '../src/types/express/index'
 
 export class StubLecturesRepository extends LecturesRepository {
     constructor() {
@@ -16,6 +18,21 @@ export class StubLecturesRepository extends LecturesRepository {
         } else {
             return undefined
         }
+    }
+
+    override async findConditionSearch(lectureRequest: LectureRequest): Promise<LectureListResult[]> {
+        const result: LectureListResult = {
+            id: 6,
+            category: 'web',
+            lectureName: 'vex',
+            lecturePrice: 26700,
+            studentCount: 343,
+            lectureCreateDate: new Date(2022, 2, 12),
+            lectureIntroduction: ' 복붙하며, Rea',
+            instructorName: '얄팍한 코딩사전',
+        }
+
+        return [result]
     }
 
 }
