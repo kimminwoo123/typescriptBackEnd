@@ -35,50 +35,38 @@ router.get('/',
 
             const request = LectureRequest.create(category, searchWord, sortCondition, page, pageSize)
 
-            const result = await lectureService.conditionSearch(request)
+            const result = await lectureService.searchCondition(request)
             return res.status(200).send(result)
-        } catch (e) {
-            console.log(e)
+        } catch (error) {
+            console.log(error)
             return res.status(500).send({ message: '오류' })
         }
     }))
 
-// /**
-// * 강의상세 조회
-// * 
-// */
-// router.get('/detail',
-//     query('id').notEmpty(),
-//     (req: Request, res: Response, next: NextFunction) => {
-//         try {
-//             const validationeError = validationResult(req)
+/**
+* 강의상세 조회
+* 
+*/
+router.get('/detail',
+    query('id').notEmpty().toInt(),
+    wrap(async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const validationError = validationResult(req)
 
-//             // validation
-//             if (!validationeError.isEmpty()) {
-//                 return res.status(400).send('validation error')
-//             }
+            // validation
+            if (!validationError.isEmpty()) {
+                return res.status(400).send('validation error')
+            }
 
-//             const id = req.query.id
-//             if (typeof id === 'string') {
-//                 lectureService.lectuerDetail(id)
-//                     .then((result) => {
-//                         if (!result.length) {
-//                             return res.status(404).send({ message: '강의상세조회 결과가 없습니다.' })
-//                         } else {
-//                             return res.status(200).send(result)
-//                         }
-//                     })
-//                     .catch((e) => {
-//                         return res.status(500).send({ message: '오류' })
-//                     })
-//             } else {
-//                 return res.status(500).send({ message: '오류' })
-//             }
-//         } catch (e) {
-//             return res.status(500).send({ message: '오류' })
-//         }
-//     }
-// )
+            const id = Number(req.query.id)
+            const result = await lectureService.searchDetail(id)
+
+            return res.status(200).send(result)
+        } catch (error) {
+            console.log(error)
+            return res.status(500).send({ message: '오류' })
+        }
+    }))
 
 // /**
 // * 강의등록

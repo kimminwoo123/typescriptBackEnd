@@ -59,7 +59,7 @@ export class Lectures extends BaseEntity {
     })
     lectureModifyDate?: LectureDto['lectureModifyDate']
 
-    @OneToMany(() => CourseDetails, courseDetail => courseDetail.lecture)
+    @OneToMany(() => CourseDetails, courseDetails => courseDetails.lecture)
     courseDetail: CourseDetails[]
 
     @ManyToOne(() => Instructors, instructor => instructor.lectures)

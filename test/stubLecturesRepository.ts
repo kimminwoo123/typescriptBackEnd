@@ -21,18 +21,21 @@ export class StubLecturesRepository extends LecturesRepository {
     }
 
     override async findConditionSearch(lectureRequest: LectureRequest): Promise<LectureListResult[]> {
-        const result: LectureListResult = {
-            id: 6,
-            category: 'web',
-            lectureName: 'vex',
-            lecturePrice: 26700,
-            studentCount: 343,
-            lectureCreateDate: new Date(2022, 2, 12),
-            lectureIntroduction: ' 복붙하며, Rea',
-            instructorName: '얄팍한 코딩사전',
+        if (lectureRequest.getCategory() === 'web') {
+            const result: LectureListResult = {
+                id: 6,
+                category: 'web',
+                lectureName: 'vex',
+                lecturePrice: 26700,
+                studentCount: 343,
+                lectureCreateDate: new Date(2022, 2, 12),
+                lectureIntroduction: '복붙하며, Rea',
+                instructorName: '얄팍한 코딩사전',
+            }
+            return [result]
+        } else {
+            return []
         }
-
-        return [result]
     }
 
 }

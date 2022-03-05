@@ -1,4 +1,5 @@
 import { LectureService } from '../src/services/lectureService'
+import { LectureRequest } from '../src/dto/lectureRequest'
 import { StubStudentsRepository } from './stubStudentsRepository'
 import { StubLecturesRepository } from './stubLecturesRepository'
 import { StubCourseDetailsRepository } from './stubCourseDetailsRepository'
@@ -13,15 +14,25 @@ describe('LecturesService', () => {
         lectureService = new LectureService(new StubLecturesRepository())
     })
 
-    // it('studentRegistration은 수강생을 생성하고 수강생 객체를 반납한다', async () => {
-    //     // give
-    //     expect.assertions(1)
-    //     const student = Students.createStudent(1, '말레니아', 'malenia@gmail.com', new Date(2022, 1, 22))
+    it('conditionSearch 조건에 따른 강의를 반납한다.', async () => {
+        // give
+        expect.assertions(2)
+        const request = LectureRequest.create('web', '노드js', 'studentCount', 1, 3)
 
-    //     // when
-    //     const saveStudent = await studentService.studentRegistration(student)
+        // when
+        const saveStudent = await lectureService.searchCondition(request)
 
-    //     // then
-    //     expect(saveStudent).toEqual({ id: 1, studentName: '말레니아', studentEmail: 'malenia@gmail.com', registDate: new Date(2022, 1, 22) })
-    // })
+        // then
+        expect(saveStudent).toHaveLength(1)
+        expect(saveStudent).toStrictEqual([{
+            id: 6,
+            category: 'web',
+            lectureName: 'vex',
+            lecturePrice: 26700,
+            studentCount: 343,
+            lectureCreateDate: new Date(2022, 2, 12),
+            lectureIntroduction: '복붙하며, Rea',
+            instructorName: '얄팍한 코딩사전',
+        }])
+    })
 })

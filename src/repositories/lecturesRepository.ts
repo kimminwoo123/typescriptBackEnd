@@ -9,24 +9,9 @@ export class LecturesRepository extends Repository<Lectures> {
         }
 
         public async findById(id: Lectures['id']): Promise<Lectures | undefined> {
-                try {
-                        return await createQueryBuilder()
-                                .select(['Lectures.id',
-                                        'Lectures.lectureName',
-                                        'Lectures.category',
-                                        'Lectures.lectureIntroduction',
-                                        'Lectures.lecturePrice',
-                                        'Lectures.studentCount',
-                                        'Lectures.openFlag',
-                                        'Lectures.lectureCreateDate',
-                                        'Lectures.lectureModifyDate',])
-                                .from(Lectures, 'Lectures')
-                                .where('Lectures.id = :id', { id })
-                                .getOne()
-                } catch (error) {
-                        console.log(error)
-                        throw new Error('LecturesRepository findById 오류')
-                }
+                return await createQueryBuilder(Lectures, 'l')
+                        .where('l.id = :id', { id })
+                        .getOne()
         }
 
         public async findConditionSearch(lectureRequest: LectureRequest): Promise<LectureListResult[]> {
@@ -56,7 +41,15 @@ export class LecturesRepository extends Repository<Lectures> {
                 return await queryBuilder.getRawMany()
         }
 
-        public async findLectureDetail() {
+        public async findDetailSearch(id: Lectures['id']): Promise<Lectures | undefined> {
+                const queryBuilder = await createQueryBuilder(Lectures, 'l')
+                        .leftJoinAndSelect('l.courseDetail', 'cd')
+                        .leftJoinAndSelect('cd.student', 's')
+                        .where('l.open_flag = true')
+                        .andWhere('l.id =:id', { id })
+                        .getOne()
 
+                return queryBuilder
         }
+
 }

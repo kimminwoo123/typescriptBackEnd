@@ -54,10 +54,21 @@ declare global {
         registDate: Date
     }
 
-    type LectureListResult =
-        Pick<LectureDto,
-            'id' | 'lectureName' | 'category' | 'lecturePrice' | 'studentCount' | 'lectureCreateDate' | 'lectureIntroduction'>
-        & InstructorDto['instructorName']
+    // type LectureListResult =
+    //     Pick<LectureDto,
+    //         'id' | 'lectureName' | 'category' | 'lecturePrice' | 'studentCount' | 'lectureCreateDate' | 'lectureIntroduction'>
+    //     & InstructorDto['instructorName']
+
+    type LectureListResult = {
+        id: LectureDto['id']
+        lectureName: LectureDto['lectureName']
+        category: LectureDto['category']
+        lectureIntroduction: LectureDto['lectureIntroduction']
+        lecturePrice: LectureDto['lecturePrice']
+        studentCount: LectureDto['studentCount']
+        lectureCreateDate: LectureDto['lectureCreateDate']
+        instructorName: InstructorDto['instructorName']
+    }
 }
 
 export type { LectureListResult }
