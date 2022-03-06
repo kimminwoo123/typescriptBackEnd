@@ -4,9 +4,12 @@ import { check, body, query, validationResult } from "express-validator"
 import { LectureService } from "../services/lectureService"
 import { LectureRequest } from '../dto/lectureRequest'
 import { LecturesRepository } from '../repositories/lecturesRepository'
+import { Lectures } from '../domains/lectures'
+import { Instructors } from '../domains/instructors'
+import { InstructorsRepository } from '../repositories/instructorsRepository'
 
 const router = Router()
-const lectureService = new LectureService(new LecturesRepository())
+const lectureService = new LectureService(new LecturesRepository(), new InstructorsRepository())
 
 /**
 * 강의목록 조회
@@ -15,9 +18,9 @@ const lectureService = new LectureService(new LecturesRepository())
 router.get('/',
     query('category').notEmpty().isIn(['web', 'app', 'game', 'algo', 'infra', 'db', 'all']),
     query('sortCondition').notEmpty().isIn(['studentCount', 'lectureCreateDate']),
-    query('searchWord').notEmpty(),
-    query('page').notEmpty(),
-    query('pageSize').notEmpty(),
+    query('searchWord').notEmpty().isString(),
+    query('page').notEmpty().isInt(),
+    query('pageSize').notEmpty().isInt(),
     wrap(async (req: Request, res: Response, next: NextFunction) => {
         try {
             const validationError = validationResult(req)
@@ -122,56 +125,43 @@ router.get('/detail',
 //     }
 // )
 
-// /**
-// * 강의등록/ 대량등록
-// * 
-// */
-// router.post('/blocks',
-//     body('data').isArray(),
-//     body('data.*.lecture_id').notEmpty(),
-//     body('data.*.lecture_name').notEmpty(),
-//     body('data.*.category').notEmpty().isIn(['web', 'app', 'game', 'algo', 'infra', 'db', 'all']),
-//     body('data.*.lecture_introduction').notEmpty(),
-//     body('data.*.lecture_price').notEmpty(),
-//     body('data.*.instructor_id').notEmpty(),
-//     (req: Request, res: Response, next: NextFunction) => {
-//         try {
-//             const validationeError = validationResult(req)
+/**
+* 강의등록/ 대량등록
+* 
+*/
+router.post('/',
+    body('lectures').isArray(),
+    body('lectures.*.lectureName').notEmpty().trim().isString(),
+    body('lectures.*.category').notEmpty().trim().isIn(['web', 'app', 'game', 'algo', 'infra', 'db', 'all']),
+    body('lectures.*.lectureIntroduction').notEmpty().trim().isString(),
+    body('lectures.*.lecturePrice').notEmpty().trim().isInt(),
+    body('instructorId').notEmpty().trim().isInt(),
+    wrap(async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const validationError = validationResult(req)
 
-//             // validation
-//             if (!validationeError.isEmpty()) {
-//                 return res.status(400).send('validation error')
-//             }
+            // validation
+            if (!validationError.isEmpty()) {
+                return res.status(400).send('validation error')
+            }
 
-//             if (req.body.data.length > 10) {
-//                 return res.status(400).send({ message: '요청건수가 너무 많습니다.' })
-//             }
+            if (req.body?.lectures?.length > 10) {
+                return res.status(400).send({ message: '강의 생성은 10건 이하만 요청가능합니다.' })
+            }
 
-//             const instructorIdList = req.body?.data?.map((v: any) => v.instructor_id)
-//             const lectureNameList = req.body?.data?.map((v: any) => v.lecture_name)
+            const instructor = Instructors.createInstructor(req.body?.instructorId as Instructors['id'])
+            const lectureList: Lectures[] =
+                req.body?.lectures?.map((v: any) => Lectures.createLecture(
+                    undefined, v.lectureName, v.category, v.lecturePrice, 0, false, new Date(), undefined, v.lectureIntroduction, undefined, instructor))
 
-//             lectureService.checkListIdName(instructorIdList, lectureNameList, req) // 강사 id 확인, 강의이름 중복 확인
-//                 .then((filterList) => {
-//                     if (filterList.length) {
-//                         lectureService.setLectures(filterList)
-//                             .then((result) => {
-//                                 return res.status(201).send(result)
-//                             })
-//                             .catch((err) => {
-//                                 return res.status(500).send({ message: '생성 실패' })
-//                             })
-//                     } else {
-//                         return res.status(400).send({ message: '등록할 강의가 없습니다.' })
-//                     }
-//                 })
-//                 .catch((err) => {
-//                     return res.status(500).send({ message: '강사 id,강의이름 체크 오류' })
-//                 })
-//         } catch (e) {
-//             return res.status(500).send({ message: '오류' })
-//         }
-//     }
-// )
+            const saveList = await lectureService.create(instructor, lectureList)
+
+            return res.status(201).send(saveList)
+        } catch (error) {
+            console.log(error)
+            return res.status(500).send({ message: '오류' })
+        }
+    }))
 
 // /**
 // * 강의수정

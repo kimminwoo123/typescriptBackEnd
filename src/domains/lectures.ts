@@ -76,7 +76,7 @@ export class Lectures extends BaseEntity {
         lectureModifyDate?: Lectures['lectureModifyDate'],
         lectureIntroduction?: Lectures['lectureIntroduction'],
         courseDetail?: Lectures['courseDetail'],
-
+        instructors?: Lectures['instructors'],
     ): Lectures {
         const lecture = new Lectures()
         id != null ? lecture.id = id : null
@@ -89,6 +89,7 @@ export class Lectures extends BaseEntity {
         lectureModifyDate != null ? lecture.lectureModifyDate = lectureModifyDate : null
         lectureIntroduction != null ? lecture.lectureIntroduction = lectureIntroduction : null
         courseDetail != null ? lecture.courseDetail = courseDetail : null
+        instructors != null ? lecture.instructors = instructors : null
         return lecture
     }
 }

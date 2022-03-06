@@ -14,6 +14,12 @@ export class LecturesRepository extends Repository<Lectures> {
                         .getOne()
         }
 
+        public async findByName(name: Lectures['lectureName']): Promise<Lectures | undefined> {
+                return await createQueryBuilder(Lectures, 'l')
+                        .where('l.lectureName = :name', { name })
+                        .getOne()
+        }
+
         public async findConditionSearch(lectureRequest: LectureRequest): Promise<LectureListResult[]> {
                 const queryBuilder = await createQueryBuilder()
                         .select(['i.instructor_name "instructorName"',
@@ -50,6 +56,30 @@ export class LecturesRepository extends Repository<Lectures> {
                         .getOne()
                 console.log(queryBuilder?.courseDetail)
                 return queryBuilder
+        }
+
+        public async saveLectures(lectureList: Lectures[]): Promise<Lectures[]> {
+                const saveResult = await createQueryBuilder(Lectures)
+                        .insert()
+                        .into(Lectures)
+                        .values(lectureList)
+                        .returning('*')
+                        .execute()
+
+                const saveLectures = saveResult.generatedMaps.map(v =>
+                        Lectures.createLecture(v.id,
+                                v.lectureName,
+                                v.category,
+                                v.lecturePrice,
+                                v.studentCount,
+                                v.openFlag,
+                                v.lectureCreateDate,
+                                v.lectureModifyDate,
+                                v.lectureIntroduction
+                        )
+                )
+
+                return saveLectures
         }
 
 }

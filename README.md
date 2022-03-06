@@ -94,4 +94,8 @@ TODO lectureService 개발
 lectureService
 searchCondition 개발 searchCondition Test 코드 작성
 searchDetail 개발
-TODO searchDetail test 코드 작성, lecture create delete 개발
+TODO searchDetail test 코드 작성, lectureService create delete 개발
+
+2022/03/06
+lectureService create 개발
+TODO lectureService create Test 코드 작성, lectureService update, delete 개발
