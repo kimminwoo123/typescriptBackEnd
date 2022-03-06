@@ -34,34 +34,6 @@ export class LectureService {
 
                 return searchResult
         }
-        public async lectuerDetail(id: string) {
-                try {
-                        const query = `
-                                select l.lecture_name , 
-                                        l.lecture_introduction , 
-                                        l.category , l.lecture_price , 
-                                        l.student_count, 
-                                        l.lecture_create_date , 
-                                        l.lecture_modify_date,
-                                        otherTable.* 
-                                from lectures l left join lateral (
-                                        select jsonb_agg(json_build_object('course_signup_date',cd.course_signup_date,'student_name', s.student_name )) as students_list
-                                        from course_details cd join students s
-                                        on cd.student_id = s.student_id 
-                                        where cd.lecture_id = l.lecture_id 
-                                        ) otherTable ON true
-                                where l.lecture_id = '${id}'
-                                ;
-                                `
-
-                        const lectureDetails = await db.query(query)
-
-                        return lectureDetails.rows
-                } catch (error) {
-                        console.log(error)
-                        throw Error
-                }
-        }
 
         /**
          * 강의 id,name 확인

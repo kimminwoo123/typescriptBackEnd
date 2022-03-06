@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>92/92</span>
+                <span class='fraction'>94/94</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.23% </span>
+                <span class="strong">89.47% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>15/17</span>
+                <span class='fraction'>17/19</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>92/92</span>
+                <span class='fraction'>94/94</span>
             </div>
         
             
@@ -154,7 +154,9 @@
 <a name='L89'></a><a href='#L89'>89</a>
 <a name='L90'></a><a href='#L90'>90</a>
 <a name='L91'></a><a href='#L91'>91</a>
-<a name='L92'></a><a href='#L92'>92</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -222,29 +224,31 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne, OneToMany } from 'typeorm'
 import { Instructors } from './instructors'
 import { CourseDetails } from './courseDetails'
@@ -306,7 +310,7 @@ export class Lectures extends BaseEntity {
     })
     lectureModifyDate?: LectureDto['lectureModifyDate']
 &nbsp;
-    @OneToMany(() =&gt; CourseDetails, courseDetail =&gt; courseDetail.lecture)
+    @OneToMany(() =&gt; CourseDetails, courseDetails =&gt; courseDetails.lecture)
     courseDetail: CourseDetails[]
 &nbsp;
     @ManyToOne(() =&gt; Instructors, instructor =&gt; instructor.lectures)
@@ -322,6 +326,8 @@ export class Lectures extends BaseEntity {
         lectureCreateDate?: Lectures['lectureCreateDate'],
         lectureModifyDate?: Lectures['lectureModifyDate'],
         lectureIntroduction?: Lectures['lectureIntroduction'],
+        courseDetail?: Lectures['courseDetail'],
+&nbsp;
     ): Lectures {
         const lecture = new Lectures()
         id != null ? lecture.id = id <span class="branch-0 cbranch-no" title="branch not covered" >: null</span>
@@ -331,9 +337,9 @@ export class Lectures extends BaseEntity {
         studentCount != null ? lecture.studentCount = studentCount : null
         openFlag != null ? lecture.openFlag = openFlag : null
         lectureCreateDate != null ? lecture.lectureCreateDate = lectureCreateDate : null
-        lectureModifyDate != null <span class="branch-0 cbranch-no" title="branch not covered" >? lecture.lectureModifyDate = lectureModifyDate </span>: null
+        lectureModifyDate != null ? lecture.lectureModifyDate = lectureModifyDate : null
         lectureIntroduction != null ? lecture.lectureIntroduction = lectureIntroduction : null
-&nbsp;
+        courseDetail != null <span class="branch-0 cbranch-no" title="branch not covered" >? lecture.courseDetail = courseDetail </span>: null
         return lecture
     }
 }</pre></td></tr></table></pre>
@@ -343,7 +349,7 @@ export class Lectures extends BaseEntity {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Sat Mar 05 2022 19:41:37 GMT+0900 (대한민국 표준시)
+                at Sun Mar 06 2022 01:16:09 GMT+0900 (대한민국 표준시)
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -2,6 +2,9 @@ import { LecturesRepository } from '../src/repositories/lecturesRepository'
 import { Lectures } from '../src/domains/lectures'
 import { LectureRequest } from '../src/dto/lectureRequest'
 import type { LectureListResult } from '../src/types/express/index'
+import { CourseDetails } from '../src/domains/courseDetails'
+import { Students } from '../src/domains/students'
+
 
 export class StubLecturesRepository extends LecturesRepository {
     constructor() {
@@ -38,4 +41,15 @@ export class StubLecturesRepository extends LecturesRepository {
         }
     }
 
+    override async findDetailSearch(id: Lectures['id']): Promise<Lectures | undefined> {
+        const lecture = Lectures.createLecture(1, '갖고노는 MySQL 데이터베이스 by 얄코', 'db', 14300, 444, true, new Date(2022, 1, 3), new Date(2022, 1, 4),
+            '비전공자도 이해할 수 있는 MySQL! 빠른 설명으로 필수개념만 훑은 뒤 사이트의 예제들과 함께 MySQL을 ‘갖고 놀면서’ 손으로 익힐 수 있도록 만든 강좌입니다.')
+        // const student = Students.createStudent(2)
+        // const course = CourseDetails.createCourse(lecture, student, new Date(2021, 12, 1))
+        if (id === 1) {
+            return lecture
+        } else {
+            return undefined
+        }
+    }
 }
