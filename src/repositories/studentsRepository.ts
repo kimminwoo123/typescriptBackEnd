@@ -58,7 +58,7 @@ export class StudentsRepository extends Repository<Students> {
 
     public async deleteById(id: Students['id']): Promise<Students> {
         try {
-            const deleteResult: DeleteResult = await createQueryBuilder()
+            const deleteResult = await createQueryBuilder()
                 .delete()
                 .from(Students).where('Students.id = :id', { id })
                 .returning('*')
@@ -66,12 +66,10 @@ export class StudentsRepository extends Repository<Students> {
 
             const deleteStudent = deleteResult.raw[0]
 
-            const resultId = deleteStudent.id
-            const studentName = deleteStudent.student_name
-            const studentEmail = deleteStudent.student_email
-            const registDate = deleteStudent.regist_date
-
-            return Students.createStudent(resultId, studentName, studentEmail, registDate)
+            return Students.createStudent(deleteStudent.id,
+                deleteStudent.student_name,
+                deleteStudent.student_email,
+                deleteStudent.regist_date)
         } catch (error) {
             console.log(error)
             throw new Error('StudentsRepository findByEmail 오류')

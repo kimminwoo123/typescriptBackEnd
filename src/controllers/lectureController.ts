@@ -71,60 +71,6 @@ router.get('/detail',
         }
     }))
 
-// /**
-// * 강의등록
-// * 
-// */
-// router.post('/',
-//     body('lecture_id').notEmpty(),
-//     body('lecture_name').notEmpty(),
-//     body('category').notEmpty().isIn(['web', 'app', 'game', 'algo', 'infra', 'db', 'all']),
-//     body('lecture_introduction').notEmpty(),
-//     body('lecture_price').notEmpty(),
-//     body('instructor_id').notEmpty(),
-//     (req: Request, res: Response, next: NextFunction) => {
-//         try {
-//             const validationeError = validationResult(req)
-
-//             // validation
-//             if (!validationeError.isEmpty()) {
-//                 return res.status(400).send('validation error')
-//             }
-
-//             const id = req?.body.instructor_id
-//             const name = req?.body.lecture_name
-
-//             if (typeof id === 'string' && typeof name === 'string') {
-//                 lectureService.checkIdName(id, name) // 강사 id 확인, 강의이름 중복 확인
-//                     .then((result) => {
-//                         if (result) {
-//                             lectureService.setLecture(req)
-//                                 .then((rowCount) => {
-//                                     if (rowCount) {
-//                                         return res.status(201).send(`${rowCount}건 생성 완료`)
-//                                     } else {
-//                                         return res.status(500).send({ message: '생성 실패' })
-//                                     }
-//                                 })
-//                                 .catch((err) => {
-//                                     return res.status(500).send({ message: '생성 실패' })
-//                                 })
-//                         } else {
-//                             return res.status(404).send({ message: 'id가 없거나 강의 이름이 중복입니다.' })
-//                         }
-//                     })
-//                     .catch((err) => {
-//                         return res.status(500).send({ message: '강사 id 확인, 강의이름 중복체크 오류' })
-//                     })
-//             } else {
-//                 return res.status(500).send({ message: 'type check 오류' })
-//             }
-//         } catch (e) {
-//             return res.status(500).send({ message: '오류' })
-//         }
-//     }
-// )
-
 /**
 * 강의등록/ 대량등록
 * 
@@ -163,160 +109,92 @@ router.post('/',
         }
     }))
 
-// /**
-// * 강의수정
-// * 
-// */
-// router.put('/',
-//     body('lecture_id').notEmpty(),
-//     body('lecture_name').notEmpty(),
-//     body('lecture_introduction').notEmpty(),
-//     body('lecture_price').notEmpty(),
-//     body('instructor_id').notEmpty(),
-//     (req: Request, res: Response, next: NextFunction) => {
-//         try {
-//             const validationeError = validationResult(req)
+/**
+* 강의수정
+* 
+*/
+router.put('/',
+    body('id').notEmpty().isInt(),
+    body('lectureName').notEmpty().isString(),
+    body('lectureIntroduction').notEmpty().isString(),
+    body('lecturePrice').notEmpty().isInt(),
+    body('instructorId').notEmpty().isInt(),
+    wrap(async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const validationError = validationResult(req)
 
-//             // validation
-//             if (!validationeError.isEmpty()) {
-//                 return res.status(400).send('validation error')
-//             }
+            // validation
+            if (!validationError.isEmpty()) {
+                return res.status(400).send('validation error')
+            }
 
-//             const instructorId = req?.body.instructor_id
-//             const lectureId = req?.body.lecture_id
-//             const lectureName = req?.body.lecture_name
-//             const lectureIntroduction = req.body.lecture_introduction
-//             const lecturePrice = req.body.lecture_price
+            const lectureId = req?.body?.id
+            const lectureName = req?.body?.lectureName
+            const lectureIntroduction = req?.body?.lectureIntroduction
+            const lecturePrice = req?.body?.lecturePrice
 
-//             if (typeof instructorId === 'string' && typeof lectureName === 'string') {
-//                 lectureService.checkIdName(instructorId, lectureName) // 강사 id 확인, 강의이름 중복 확인
-//                     .then((result) => {
-//                         if (result) {
-//                             lectureService.modifyLecture(lectureId, lectureName, lectureIntroduction, lecturePrice)
-//                                 .then((rowCount) => {
-//                                     if (rowCount) {
-//                                         return res.status(200).send('강의 수정 완료')
-//                                     } else {
-//                                         return res.status(500).send({ message: '수정 실패' })
-//                                     }
-//                                 })
-//                                 .catch((err) => {
-//                                     return res.status(500).send({ message: '생성 실패' })
-//                                 })
-//                         } else {
-//                             return res.status(404).send({ message: 'id가 없거나 강의 이름이 중복입니다.' })
-//                         }
-//                     })
-//                     .catch((err) => {
-//                         return res.status(500).send({ message: '강사 id 확인, 강의이름 중복체크 오류' })
-//                     })
-//             } else {
-//                 return res.status(500).send({ message: 'type check 오류' })
-//             }
-//         } catch (e) {
-//             return res.status(500).send({ message: '오류' })
-//         }
-//     }
-// )
+            const instructor = Instructors.createInstructor(req.body?.instructorId)
+            const lecture = Lectures.createLecture(lectureId, lectureName, undefined, lecturePrice, undefined, undefined, undefined, new Date(), lectureIntroduction)
 
-// /**
-// * 강의오픈
-// * 
-// */
-// router.patch('/',
-//     body('lecture_id').notEmpty(),
-//     body('instructor_id').notEmpty(),
-//     (req: Request, res: Response, next: NextFunction) => {
-//         try {
-//             const validationeError = validationResult(req)
+            const result = await lectureService.update(instructor, lecture)
+            return res.status(200).send(result)
+        } catch (error) {
+            console.log(error)
+            return res.status(500).send({ message: '오류' })
+        }
+    }))
 
-//             // validation
-//             if (!validationeError.isEmpty()) {
-//                 return res.status(400).send('validation error')
-//             }
+/**
+* 강의오픈
+* 
+*/
+router.patch('/',
+    body('id').notEmpty().isInt(),
+    body('instructorId').notEmpty().isInt(),
+    wrap(async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const validationError = validationResult(req)
 
-//             const instructorId = req?.body.instructor_id
-//             const lectureId = req?.body.lecture_id
+            // validation
+            if (!validationError.isEmpty()) {
+                return res.status(400).send('validation error')
+            }
 
-//             if (typeof instructorId === 'string' && typeof lectureId === 'string') {
-//                 lectureService.checkId(instructorId, lectureId) // 강사 id 확인, 강의id 확인
-//                     .then((result) => {
-//                         if (result) {
-//                             lectureService.openLecture(lectureId)
-//                                 .then((rowCount) => {
-//                                     if (rowCount) {
-//                                         return res.status(200).send('강의 오픈 완료')
-//                                     } else {
-//                                         return res.status(500).send({ message: '강의 오픈 실패' })
-//                                     }
-//                                 })
-//                                 .catch((err) => {
-//                                     return res.status(500).send({ message: '강의 오픈 실패' })
-//                                 })
-//                         } else {
-//                             return res.status(404).send({ message: '강의id 또는 강사id 오류입니다.' })
-//                         }
-//                     })
-//                     .catch((err) => {
-//                         return res.status(500).send({ message: '강의id 또는 강사id 체크 오류' })
-//                     })
-//             } else {
-//                 return res.status(500).send({ message: 'type check 오류' })
-//             }
-//         } catch (e) {
-//             return res.status(500).send({ message: '오류' })
-//         }
-//     }
-// )
+            const instructor = Instructors.createInstructor(req?.body?.instructorId)
+            const lecture = Lectures.createLecture(req?.body?.id, undefined, undefined, undefined, undefined, true)
 
-// /**
-// * 강의삭제
-// * 
-// */
-// router.delete('/',
-//     body('lecture_id').notEmpty(),
-//     body('instructor_id').notEmpty(),
-//     (req: Request, res: Response, next: NextFunction) => {
-//         try {
-//             const validationeError = validationResult(req)
+            const result = await lectureService.update(instructor, lecture)
+            return res.status(200).send(result)
+        } catch (e) {
+            return res.status(500).send({ message: '오류' })
+        }
+    }))
 
-//             // validation
-//             if (!validationeError.isEmpty()) {
-//                 return res.status(400).send('validation error')
-//             }
+/**
+* 강의삭제
+* 
+*/
+router.delete('/',
+    body('id').notEmpty(),
+    body('instructorId').notEmpty(),
+    wrap(async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const validationError = validationResult(req)
 
-//             const instructorId = req?.body.instructor_id
-//             const lectureId = req?.body.lecture_id
+            // validation
+            if (!validationError.isEmpty()) {
+                return res.status(400).send('validation error')
+            }
 
-//             if (typeof instructorId === 'string' && typeof lectureId === 'string') {
-//                 lectureService.checkId(instructorId, lectureId) // 강사 id 확인, 강의id 확인
-//                     .then((result) => {
-//                         if (result) {
-//                             lectureService.deleteLecture(lectureId)
-//                                 .then((rowCount) => {
-//                                     if (rowCount) {
-//                                         return res.status(204).send('강의 삭제 완료')
-//                                     } else {
-//                                         return res.status(400).send({ message: '강의 삭제실패, 이미 수강하는 학생이 존재합니다.' })
-//                                     }
-//                                 })
-//                                 .catch((err) => {
-//                                     return res.status(500).send({ message: '강의 삭제 실패' })
-//                                 })
-//                         } else {
-//                             return res.status(404).send({ message: '강사id 또는 강의 id가 없습니다.' })
-//                         }
-//                     })
-//                     .catch((err) => {
-//                         return res.status(500).send({ message: '강의id 또는 강사id 체크 오류' })
-//                     })
-//             } else {
-//                 return res.status(500).send({ message: 'type check 오류' })
-//             }
-//         } catch (e) {
-//             return res.status(500).send({ message: '서버오류' })
-//         }
-//     }
-// )
+            const instructor = Instructors.createInstructor(req?.body?.instructorId)
+            const lecture = Lectures.createLecture(req?.body?.id, undefined, undefined, undefined, undefined, true)
+
+            const result = await lectureService.delete(instructor, lecture)
+            return res.status(204).send(result)
+        } catch (error) {
+            console.log(error)
+            return res.status(500).send({ message: '서버오류' })
+        }
+    }))
 
 export { router }

@@ -13,6 +13,13 @@ export class InstructorsRepository extends AbstractRepository<Instructors>{
             .getOne()
     }
 
+    public async findByIdAndJoin(id: Instructors['id']): Promise<Instructors | undefined> {
+        return await createQueryBuilder(Instructors, 'i')
+            .leftJoinAndSelect('i.lectures', 'l')
+            .where('i.id = :id', { id })
+            .getOne()
+    }
+
     public async findAll(): Promise<Instructors[]> {
         return await this.manager.find(Instructors)
     }

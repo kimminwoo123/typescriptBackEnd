@@ -39,207 +39,62 @@ export class LectureService {
                 return searchResult
         }
 
-        // /**
-        //  * 강의 id,name 확인
-        //  * 
-        //  */
-        // public async checkIdName(instructorId: string, lectureName: string) {
-        //         try {
-        //                 const query = `
-        //                 select i.instructor_id, l.lecture_name
-        //                 from instructors i join lectures l 
-        //                 on i.instructor_id = l.instructor_id 
-        //                 where i.instructor_id = '${instructorId}' or l.lecture_name ='${lectureName}';
-        //               `
-
-        //                 const result = await db.query(query) // 강사 id 확인 + 강의이름 중복 확인
-
-        //                 // 강사 id체크 ,이름 중복체크
-        //                 const instructorIdCheck = result.rows.some((v) => v.instructor_id === instructorId)
-        //                 const lecutreNameDuplicateCheck = result.rows.some((v) => v.lecture_name === lectureName)
-
-        //                 if (instructorIdCheck && !lecutreNameDuplicateCheck) {
-        //                         return true
-        //                 } else {
-        //                         return false
-        //                 }
-        //         } catch (error) {
-        //                 // console.log(error)
-        //                 throw Error
-        //         }
-        // }
-
-        // /**
-        //  * 강의리스트 id,name 확인
-        //  * 
-        //  */
-        // public async checkListIdName(instructorIdList: Array<string>, lectureNameList: Array<string>, req: Request) {
-        //         try {
-        //                 const query = `
-        //                         select array_agg(lecture_name) as lecture_name,
-        //                                 (select array_agg(instructor_id) as instructor_id
-        //                                 from instructors
-        //                                 where instructor_id in ('${instructorIdList.join(`','`)}'))
-        //                         from lectures
-        //                         where lecture_name in ('${lectureNameList.join(`','`)}');
-        //                       `
-
-        //                 const result = await db.query(query) // 강사 id 확인 + 강의이름 중복 확인
-
-        //                 const filterList = req.body?.data?.filter((v: any) => result.rows[0].instructor_id.includes(v.instructor_id) && !result.rows[0].lecture_name.includes(v.lecture_name))
-
-        //                 return filterList
-        //         } catch (error) {
-        //                 // console.log(error)
-        //                 throw Error
-        //         }
-        // }
-
         /**
          * 강의 등록
          * 
          */
-        public async create(instructor: Instructors, lectureList: Lectures[]) {
-                try {
-                        const checkId = await this.instructorsRepository.findById(instructor.id)
-                        if (checkId == null) {
-                                throw new Error('잘못된 강사 id입니다.')
-                        }
-
-                        const filterLecture: Lectures[] = []
-                        for (const lecture of lectureList) {
-                                const checkName = await this.lecturesRepository.findByName(lecture.lectureName)
-                                if (checkName == null) {
-                                        filterLecture.push(lecture)
-                                }
-                        }
-
-                        return await this.lecturesRepository.saveLectures(filterLecture)
-                } catch (error) {
-                        console.log(error)
-                        throw Error
+        public async create(instructor: Instructors, lectureList: Lectures[]): Promise<Lectures[]> {
+                const checkId = await this.instructorsRepository.findById(instructor.id)
+                if (checkId == null) {
+                        throw new Error('잘못된 강사 id입니다.')
                 }
-        }
 
-        /**
-         * 강의 대량 등록
-         * 
-         */
-        public async setLectures(filterList: Array<any>) {
-                try {
-
-                        const insertFormat = filterList.map(v => `('${v.lecture_id}','${v.lecture_name}','${v.category}','${v.lecture_introduction}','${v.lecture_price}',0,false,current_date,null,'${v.instructor_id}')`)
-
-                        const query = `
-                                INSERT INTO lectures 
-                                        (lecture_id, 
-                                        lecture_name, 
-                                        category, 
-                                        lecture_introduction, 
-                                        lecture_price, 
-                                        student_count, 
-                                        open_flag, 
-                                        lecture_create_date, 
-                                        lecture_modify_date, 
-                                        instructor_id)
-                                VALUES 
-                                ${insertFormat}
-                                RETURNING * ;
-                                      `
-
-                        const result = await db.query(query)
-                        return result.rows
-                } catch (error) {
-                        // console.log(error)
-                        throw Error
+                const filterLecture: Lectures[] = []
+                for (const lecture of lectureList) {
+                        const checkName = await this.lecturesRepository.findByName(lecture.lectureName)
+                        if (checkName == null) {
+                                filterLecture.push(lecture)
+                        }
                 }
+
+                return await this.lecturesRepository.saveLectures(filterLecture)
         }
 
         /**
          * 강의 수정
          * 
          */
-        public async modifyLecture(lectureId: string, lectureName: string, lectureIntroduction: string, lecturePrice: string) {
-                try {
-                        const query = `
-                                update lectures 
-                                set lecture_name = '${lectureName}', 
-                                        lecture_introduction = '${lectureIntroduction}', 
-                                        lecture_price = '${lecturePrice}', 
-                                        lecture_modify_date = current_date 
-                                where lecture_id = '${lectureId}';
-                                `
-
-                        const result = await db.query(query)
-                        return result.rowCount
-                } catch (error) {
-                        console.log(error)
-                        throw Error
-                }
-        }
-
-        /**
-         * 강의 id,강사 id 확인
-         * 
-         */
-        public async checkId(instructorId: string, lectureId: string) {
-                try {
-                        const query = `
-                        select instructor_id, lecture_id
-                        from lectures 
-                        where instructor_id = '${instructorId}' and lecture_id ='${lectureId}';
-                      `
-
-                        const result = await db.query(query)
-
-                        if (result.rows.length) {
-                                return true
-                        } else {
-                                return false
-                        }
-                } catch (error) {
-                        console.log(error)
-                        throw Error
+        public async update(instructor: Instructors, lecture: Lectures): Promise<Lectures> {
+                const checkId = await this.instructorsRepository.findByIdAndJoin(instructor.id)
+                if (checkId == null) {
+                        throw new Error('잘못된 강사 id입니다.')
                 }
 
-        }
-
-        /**
-         * 강의 오픈
-         * 
-         */
-        public async openLecture(lectureId: string) {
-                try {
-                        const query = `
-                                update lectures 
-                                set open_flag = true
-                                where lecture_id = '${lectureId}';
-                                `
-
-                        const result = await db.query(query)
-                        return result.rowCount
-                } catch (error) {
-                        console.log(error)
-                        throw Error
+                const checkLectureId = checkId?.lectures?.filter(v => v.id === Number(lecture.id))
+                if (checkLectureId?.length === 0) {
+                        throw new Error('잘못된 강의 id입니다.')
                 }
+
+                return await this.lecturesRepository.updateLecture(lecture)
         }
 
         /**
          * 강의 삭제
          * 
          */
-        public async deleteLecture(lectureId: string) {
-                try {
-                        const query = `
-                        delete from lectures where lecture_id = '${lectureId}';
-                        `
-
-                        const result = await db.query(query)
-
-                        return result.rowCount
-                } catch (error) {
-                        console.log(error)
-                        throw Error
+        public async delete(instructor: Instructors, lecture: Lectures): Promise<Lectures> {
+                const checkId = await this.instructorsRepository.findByIdAndJoin(instructor.id)
+                if (checkId == null) {
+                        throw new Error('잘못된 강사 id입니다.')
                 }
+
+                const checkLectureId = checkId?.lectures?.filter(v => v.id === Number(lecture.id))
+                if (checkLectureId?.length === 0) {
+                        throw new Error('잘못된 강의 id입니다.')
+                } else if (checkLectureId?.find(v => Number(v.studentCount) > 0) != null) {
+                        throw new Error('수강중인 학생이 있습니다.')
+                }
+
+                return await this.lecturesRepository.deleteLecture(lecture)
         }
 }

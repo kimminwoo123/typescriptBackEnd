@@ -82,4 +82,45 @@ export class LecturesRepository extends Repository<Lectures> {
                 return saveLectures
         }
 
+        public async updateLecture(lecture: Lectures): Promise<Lectures> {
+                const updateResult = await createQueryBuilder()
+                        .update(Lectures, lecture)
+                        .whereEntity(lecture)
+                        .where("id = :id", { id: lecture.id })
+                        .updateEntity(true)
+                        .returning('*')
+                        .execute()
+
+                const result = updateResult.generatedMaps[0]
+
+                return Lectures.createLecture(result.id,
+                        result.lectureName,
+                        result.category,
+                        result.lecturePrice,
+                        result.studentCount,
+                        result.openFlag,
+                        result.lectureCreateDate,
+                        result.lectureModifyDate,
+                        result.lectureIntroduction)
+        }
+
+        public async deleteLecture(lecture: Lectures): Promise<Lectures> {
+                const deleteResult = await createQueryBuilder()
+                        .delete()
+                        .from(Lectures)
+                        .where('id = :id', { id: lecture.id })
+                        .returning('*')
+                        .execute()
+
+                const deleteLecture = deleteResult.raw[0]
+
+                return Lectures.createLecture(deleteLecture.id,
+                        deleteLecture.lecture_name,
+                        deleteLecture.category,
+                        deleteLecture.lecture_price,
+                        deleteLecture.student_count,
+                        deleteLecture.open_flag,
+                        deleteLecture.lecture_create_date,
+                        deleteLecture.lecture_modify_date)
+        }
 }
