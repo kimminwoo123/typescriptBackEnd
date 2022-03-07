@@ -54,7 +54,7 @@ export class LecturesRepository extends Repository<Lectures> {
                         .where('l.open_flag = true')
                         .andWhere('l.id =:id', { id })
                         .getOne()
-                console.log(queryBuilder?.courseDetail)
+
                 return queryBuilder
         }
 

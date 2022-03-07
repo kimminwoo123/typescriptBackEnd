@@ -8,37 +8,23 @@ export class CourseDetailsRepository extends Repository<CourseDetails> {
     }
 
     public async saveByCourse(course: CourseDetails): Promise<CourseDetails> {
-        try {
-            const saveResult = await createQueryBuilder()
-                .insert()
-                .into(CourseDetails)
-                .values(course)
-                .returning('*')
-                .execute()
+        const saveResult = await createQueryBuilder()
+            .insert()
+            .into(CourseDetails)
+            .values(course)
+            .returning('*')
+            .execute()
 
-            const saveCourse = saveResult.generatedMaps[0]
+        const saveCourse = saveResult.generatedMaps[0]
 
-            return CourseDetails.createCourse(saveCourse.lecture, saveCourse.student, saveCourse.registDate)
-        } catch (error) {
-            console.log(error)
-            throw new Error('StudentsRepository saveStudent 오류')
-        }
+        return CourseDetails.createCourse(saveCourse.lecture, saveCourse.student, saveCourse.registDate)
     }
 
     public async findById(course: CourseDetails): Promise<CourseDetails | undefined> {
-        try {
-            return await createQueryBuilder()
-                .select(['CourseDetails.registDate',])
-                .from(CourseDetails, 'CourseDetails')
-                .where('CourseDetails.lecture = :lectureId and CourseDetails.student = :studentId', { lectureId: course.lecture.id, studentId: course.student.id })
-                .getOne()
-        } catch (error) {
-            console.log(error)
-            throw new Error('CourseDetailsRepository findById 오류')
-        }
+        return await createQueryBuilder()
+            .select(['CourseDetails.registDate',])
+            .from(CourseDetails, 'CourseDetails')
+            .where('CourseDetails.lecture = :lectureId and CourseDetails.student = :studentId', { lectureId: course.lecture.id, studentId: course.student.id })
+            .getOne()
     }
-
-    // public async delete(id: Students['id']): Promise<void> {
-    //     await this.manager.delete(Students, { id })
-    // }
 }
