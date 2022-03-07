@@ -99,3 +99,4 @@ TODO searchDetail test 코드 작성, lectureService create delete 개발
 2022/03/06
 lectureService create 개발
 TODO lectureService create Test 코드 작성, lectureService update, delete 개발
+lectureService update, delete 개발,테스트코드 완료
