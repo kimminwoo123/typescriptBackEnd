@@ -73,29 +73,14 @@ export class StudentService {
         }
 
         private async checkEmailStudent(email: Students['studentEmail']): Promise<Students | undefined> {
-                try {
-                        return await this.studentRepository.findByEmail(email)
-                } catch (error) {
-                        console.log(error)
-                        throw new Error('StudentService checkEmailStudent 오류')
-                }
+                return await this.studentRepository.findByEmail(email)
         }
 
         private async checkIdStudent(id: Students['id']): Promise<Students | undefined> {
-                try {
-                        return await this.studentRepository.findById(id)
-                } catch (error) {
-                        console.log(error)
-                        throw new Error('StudentService checkIdStudent 오류')
-                }
+                return await this.studentRepository.findById(id)
         }
 
         private async checkIdLecture(id: Lectures['id']): Promise<Lectures | undefined> {
-                try {
-                        return await this.lecturesRepository.findById(id)
-                } catch (error) {
-                        console.log(error)
-                        throw new Error('StudentService checkIdLecture 오류')
-                }
+                return await this.lecturesRepository.findById(id)
         }
 }

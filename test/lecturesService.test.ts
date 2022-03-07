@@ -3,15 +3,16 @@ import { LectureRequest } from '../src/dto/lectureRequest'
 import { StubStudentsRepository } from './stubStudentsRepository'
 import { StubLecturesRepository } from './stubLecturesRepository'
 import { StubCourseDetailsRepository } from './stubCourseDetailsRepository'
-import { Students } from '../src/domains/students'
+import { StubInstructorRepository } from './stubInstructorRepository'
+import { Instructors } from '../src/domains/instructors'
 import { Lectures } from '../src/domains/lectures'
 import { CourseDetails } from '../src/domains/courseDetails'
 
 describe('LecturesService', () => {
-    let lectureService = new LectureService(new StubLecturesRepository())
+    let lectureService = new LectureService(new StubLecturesRepository(), new StubInstructorRepository())
 
     beforeEach(() => {
-        lectureService = new LectureService(new StubLecturesRepository())
+        lectureService = new LectureService(new StubLecturesRepository(), new StubInstructorRepository())
     })
 
     describe('searchCondition', () => {
@@ -91,6 +92,174 @@ describe('LecturesService', () => {
                 .rejects
                 // then
                 .toThrow('오픈 되지 않은 강의 입니다.')
+        })
+    })
+
+    describe('create', () => {
+        it('강의를 생성한다.', async () => {
+            // give
+            expect.assertions(2)
+            const instructor = Instructors.createInstructor(1)
+            const lectureList: Lectures[] = [
+                Lectures.createLecture(undefined, 'cnc', 'web', 1234, 0, false, new Date(2022, 1, 1), undefined, 'Cnc 강의입니다.'),
+                Lectures.createLecture(undefined, 'bnb', 'game', 5353, 0, false, new Date(2022, 1, 1), undefined, 'bnb 강의입니다.'),
+                Lectures.createLecture(undefined, '테스트', 'algo', 444, 0, false, new Date(2022, 1, 1), undefined, '테스트 강의입니다.'),
+            ]
+
+            // when
+            const result = await lectureService.create(instructor, lectureList)
+
+            // then
+            expect(result).toEqual([
+                {
+                    id: 1,
+                    lectureName: 'cnc',
+                    category: 'web',
+                    lecturePrice: 1234,
+                    studentCount: 0,
+                    openFlag: false,
+                    lectureCreateDate: new Date(2022, 1, 1),
+                    lectureModifyDate: undefined,
+                    lectureIntroduction: 'Cnc 강의입니다.'
+                },
+                {
+                    id: 2,
+                    lectureName: 'bnb',
+                    category: 'game',
+                    lecturePrice: 5353,
+                    studentCount: 0,
+                    openFlag: false,
+                    lectureCreateDate: new Date(2022, 1, 1),
+                    lectureModifyDate: undefined,
+                    lectureIntroduction: 'bnb 강의입니다.'
+                }
+            ])
+            expect(result).toHaveLength(2)
+        })
+        it('잘못된 강사id일 때 error', async () => {
+            // give
+            expect.assertions(1)
+            const instructor = Instructors.createInstructor(2)
+            const lectureList: Lectures[] = [
+                Lectures.createLecture(undefined, 'cnc', 'web', 1234, 0, false, new Date(2022, 1, 1), undefined, 'Cnc 강의입니다.'),
+                Lectures.createLecture(undefined, 'bnb', 'game', 5353, 0, false, new Date(2022, 1, 1), undefined, 'bnb 강의입니다.'),
+                Lectures.createLecture(undefined, '테스트', 'algo', 444, 0, false, new Date(2022, 1, 1), undefined, '테스트 강의입니다.'),
+            ]
+
+            // when
+            await expect(lectureService.create(instructor, lectureList))
+                .rejects
+                // then
+                .toThrow('잘못된 강사 id입니다.')
+        })
+    })
+
+    describe('update', () => {
+        it('강의를 수정한다.', async () => {
+            // give
+            expect.assertions(1)
+            const instructor = Instructors.createInstructor(1)
+            const lecture = Lectures.createLecture(4, '타입스크립트 강의', undefined, 120000, undefined, undefined, undefined, new Date(2022, 3, 1), '타입스크립트 강의입니다.')
+
+            // when
+            const result = await lectureService.update(instructor, lecture)
+
+            // then
+            expect(result).toEqual({
+                id: 4,
+                category: "web",
+                lectureIntroduction: "타입스크립트 강의입니다.",
+                lectureModifyDate: new Date(2022, 3, 5),
+                lectureName: '타입스크립트 강의',
+                lecturePrice: 120000,
+                openFlag: false,
+                studentCount: 0,
+            })
+        })
+        it('잘못된 강사id일 때 error', async () => {
+            // give
+            expect.assertions(1)
+            const instructor = Instructors.createInstructor(2)
+            const lecture = Lectures.createLecture(4, '타입스크립트 강의', undefined, 120000, undefined, undefined, undefined, new Date(2022, 3, 1), '타입스크립트 강의입니다.')
+
+            // when
+            await expect(lectureService.update(instructor, lecture))
+                .rejects
+                // then
+                .toThrow('잘못된 강사 id입니다.')
+        })
+        it('잘못된 강의id일 때 error', async () => {
+            // give
+            expect.assertions(1)
+            const instructor = Instructors.createInstructor(1)
+            const lecture = Lectures.createLecture(3, 'java 강의', undefined, 90000, undefined, undefined, undefined, new Date(2022, 3, 3), '자바 강의입니다.')
+
+            // when
+            await expect(lectureService.update(instructor, lecture))
+                .rejects
+                // then
+                .toThrow('잘못된 강의 id입니다.')
+        })
+    })
+
+    describe('delete', () => {
+        it('강의를 삭제한다.', async () => {
+            // give
+            expect.assertions(1)
+            const instructor = Instructors.createInstructor(3)
+            const lecture = Lectures.createLecture(4)
+
+            // when
+            const result = await lectureService.delete(instructor, lecture)
+
+            // then
+            expect(result).toEqual({
+                id: 4,
+                category: "web",
+                lectureIntroduction: "타입스크립트 강의입니다.",
+                lectureCreateDate: new Date(2022, 3, 1),
+                lectureModifyDate: new Date(2022, 3, 4),
+                lectureName: '타입스크립트 강의',
+                lecturePrice: 120000,
+                openFlag: false,
+                studentCount: 0,
+            })
+        })
+        it('잘못된 강사id일 때 error', async () => {
+            // give
+            expect.assertions(1)
+            const instructor = Instructors.createInstructor(4)
+            const lecture = Lectures.createLecture(4)
+
+            // when
+            await expect(lectureService.delete(instructor, lecture))
+                .rejects
+                // then
+                .toThrow('잘못된 강사 id입니다.')
+        })
+        it('잘못된 강의id일 때 error', async () => {
+            // give
+            expect.assertions(1)
+            const instructor = Instructors.createInstructor(3)
+            const lecture = Lectures.createLecture(5)
+
+            // when
+            await expect(lectureService.delete(instructor, lecture))
+                .rejects
+                // then
+                .toThrow('잘못된 강의 id입니다.')
+        })
+        it('수강중인 학생이 있을때 error', async () => {
+            // give
+            expect.assertions(1)
+            const instructor = Instructors.createInstructor(9)
+            const lecture = Lectures.createLecture(6)
+
+            // when
+            await expect(lectureService.delete(instructor, lecture))
+                .rejects
+                // then
+                .toThrow('수강중인 학생이 있습니다.')
         })
     })
 })

@@ -80,7 +80,7 @@ describe('StudentService', () => {
             expect(courseResult).toEqual(course)
         })
 
-        it('가입되지 않은 학생일때 error 반환', async () => {
+        it('가입되지 않은 학생일때 error', async () => {
             // give
             expect.assertions(1)
             const student = Students.createStudent(2)
@@ -93,7 +93,7 @@ describe('StudentService', () => {
                 .toThrow('존재하지 않는 학생 id입니다')
         })
 
-        it('생성되지 않은 강의일때 error 반환', async () => {
+        it('생성되지 않은 강의일때 error', async () => {
             // give
             expect.assertions(1)
             const student = Students.createStudent(1)
@@ -106,7 +106,7 @@ describe('StudentService', () => {
                 .toThrow('존재하지 않는 강의 id입니다')
         })
 
-        it('신청할 수 없는 강의일때 error 반환', async () => {
+        it('신청할 수 없는 강의일때 error', async () => {
             // give
             expect.assertions(1)
             const student = Students.createStudent(1)
@@ -119,7 +119,7 @@ describe('StudentService', () => {
                 .toThrow('신청할 수 없는 강의입니다')
         })
 
-        it('이미 강의 신청되어 있을때 error 반환', async () => {
+        it('이미 강의 신청되어 있을때 error', async () => {
             // give
             expect.assertions(1)
             const student = Students.createStudent(1)

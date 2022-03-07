@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.17% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>93/102</span>
+                <span class='fraction'>86/86</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.35% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>14/17</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.17% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>93/102</span>
+                <span class='fraction'>86/86</span>
             </div>
         
             
@@ -148,24 +148,7 @@
 <a name='L83'></a><a href='#L83'>83</a>
 <a name='L84'></a><a href='#L84'>84</a>
 <a name='L85'></a><a href='#L85'>85</a>
-<a name='L86'></a><a href='#L86'>86</a>
-<a name='L87'></a><a href='#L87'>87</a>
-<a name='L88'></a><a href='#L88'>88</a>
-<a name='L89'></a><a href='#L89'>89</a>
-<a name='L90'></a><a href='#L90'>90</a>
-<a name='L91'></a><a href='#L91'>91</a>
-<a name='L92'></a><a href='#L92'>92</a>
-<a name='L93'></a><a href='#L93'>93</a>
-<a name='L94'></a><a href='#L94'>94</a>
-<a name='L95'></a><a href='#L95'>95</a>
-<a name='L96'></a><a href='#L96'>96</a>
-<a name='L97'></a><a href='#L97'>97</a>
-<a name='L98'></a><a href='#L98'>98</a>
-<a name='L99'></a><a href='#L99'>99</a>
-<a name='L100'></a><a href='#L100'>100</a>
-<a name='L101'></a><a href='#L101'>101</a>
-<a name='L102'></a><a href='#L102'>102</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L86'></a><a href='#L86'>86</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -228,10 +211,10 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -242,34 +225,18 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import { Router, Response, Request, NextFunction } from "express"
 import { StudentsRepository } from '../repositories/studentsRepository'
 import { LecturesRepository } from '../repositories/lecturesRepository'
 import { CourseDetailsRepository } from '../repositories/courseDetailsRepository'
-&nbsp;
 import { Students } from '../domains/students'
 import { Lectures } from '../domains/lectures'
 import { CourseDetails } from '../domains/courseDetails'
@@ -341,30 +308,15 @@ export class StudentService {
         }
 &nbsp;
         private async checkEmailStudent(email: Students['studentEmail']): Promise&lt;Students | undefined&gt; {
-                try {
-                        return await this.studentRepository.findByEmail(email)
-                } <span class="branch-0 cbranch-no" title="branch not covered" >catch (error) {</span>
-<span class="cstat-no" title="statement not covered" >                        console.log(error)</span>
-<span class="cstat-no" title="statement not covered" >                        throw new Error('StudentService checkEmailStudent 오류')</span>
-<span class="cstat-no" title="statement not covered" >                }</span>
+                return await this.studentRepository.findByEmail(email)
         }
 &nbsp;
         private async checkIdStudent(id: Students['id']): Promise&lt;Students | undefined&gt; {
-                try {
-                        return await this.studentRepository.findById(id)
-                } <span class="branch-0 cbranch-no" title="branch not covered" >catch (error) {</span>
-<span class="cstat-no" title="statement not covered" >                        console.log(error)</span>
-<span class="cstat-no" title="statement not covered" >                        throw new Error('StudentService checkIdStudent 오류')</span>
-<span class="cstat-no" title="statement not covered" >                }</span>
+                return await this.studentRepository.findById(id)
         }
 &nbsp;
         private async checkIdLecture(id: Lectures['id']): Promise&lt;Lectures | undefined&gt; {
-                try {
-                        return await this.lecturesRepository.findById(id)
-                } <span class="branch-0 cbranch-no" title="branch not covered" >catch (error) {</span>
-<span class="cstat-no" title="statement not covered" >                        console.log(error)</span>
-<span class="cstat-no" title="statement not covered" >                        throw new Error('StudentService checkIdLecture 오류')</span>
-<span class="cstat-no" title="statement not covered" >                }</span>
+                return await this.lecturesRepository.findById(id)
         }
 }</pre></td></tr></table></pre>
 
@@ -373,7 +325,7 @@ export class StudentService {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Fri Mar 04 2022 21:15:21 GMT+0900 (대한민국 표준시)
+                at Mon Mar 07 2022 23:55:24 GMT+0900 (대한민국 표준시)
             </div>
         <script src="../../prettify.js"></script>
         <script>

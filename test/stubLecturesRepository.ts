@@ -23,6 +23,14 @@ export class StubLecturesRepository extends LecturesRepository {
         }
     }
 
+    override async findByName(name: Lectures['lectureName']): Promise<Lectures | undefined> {
+        if (name === '테스트') {
+            return Lectures.createLecture(4, '테스트', 'algo', 444, 0, false, new Date(2022, 1, 1), undefined, '테스트 강의입니다.')
+        } else {
+            return undefined
+        }
+    }
+
     override async findConditionSearch(lectureRequest: LectureRequest): Promise<LectureListResult[]> {
         if (lectureRequest.getCategory() === 'web') {
             const result: LectureListResult = {
@@ -51,5 +59,33 @@ export class StubLecturesRepository extends LecturesRepository {
         } else {
             return undefined
         }
+    }
+
+    override async saveLectures(lectureList: Lectures[]): Promise<Lectures[]> {
+        return [
+            Lectures.createLecture(1, 'cnc', 'web', 1234, 0, false, new Date(2022, 1, 1), undefined, 'Cnc 강의입니다.'),
+            Lectures.createLecture(2, 'bnb', 'game', 5353, 0, false, new Date(2022, 1, 1), undefined, 'bnb 강의입니다.'),
+        ]
+    }
+
+    override async updateLecture(lecture: Lectures): Promise<Lectures> {
+        lecture.category = 'web'
+        lecture.studentCount = 0
+        lecture.openFlag = false
+        lecture.lectureModifyDate = new Date(2022, 3, 5)
+
+        return lecture
+    }
+
+    override async deleteLecture(lecture: Lectures): Promise<Lectures> {
+        return Lectures.createLecture(lecture.id,
+            '타입스크립트 강의',
+            'web',
+            120000,
+            0,
+            false,
+            new Date(2022, 3, 1),
+            new Date(2022, 3, 4),
+            '타입스크립트 강의입니다.')
     }
 }
