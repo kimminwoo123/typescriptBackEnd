@@ -6,7 +6,7 @@ import { router as studentRouter } from "./controllers/studentController"
 import { EntityManager, EntityRepository, getCustomRepository } from 'typeorm'
 import { LecturesRepository } from './repositories/lecturesRepository'
 import { InstructorsRepository } from './repositories/instructorsRepository'
-import { Instructors } from './domains/instructors'
+import { Instructors } from './entities/instructors'
 import dayjs from "dayjs"
 
 const app = express()

@@ -1,5 +1,5 @@
 import { CourseDetailsRepository } from '../src/repositories/courseDetailsRepository'
-import { CourseDetails } from '../src/domains/courseDetails'
+import { CourseDetails } from '../src/entities/courseDetails'
 
 export class StubCourseDetailsRepository extends CourseDetailsRepository {
     constructor() {

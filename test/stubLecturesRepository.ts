@@ -1,10 +1,7 @@
 import { LecturesRepository } from '../src/repositories/lecturesRepository'
-import { Lectures } from '../src/domains/lectures'
+import { Lectures } from '../src/entities/lectures'
 import { LectureRequest } from '../src/dto/lectureRequest'
 import type { LectureListResult } from '../src/types/express/index'
-import { CourseDetails } from '../src/domains/courseDetails'
-import { Students } from '../src/domains/students'
-
 
 export class StubLecturesRepository extends LecturesRepository {
     constructor() {

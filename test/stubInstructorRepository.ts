@@ -1,6 +1,6 @@
 import { InstructorsRepository } from '../src/repositories/instructorsRepository'
-import { Instructors } from '../src/domains/instructors'
-import { Lectures } from '../src/domains/lectures'
+import { Instructors } from '../src/entities/instructors'
+import { Lectures } from '../src/entities/lectures'
 
 export class StubInstructorRepository extends InstructorsRepository {
     constructor() {

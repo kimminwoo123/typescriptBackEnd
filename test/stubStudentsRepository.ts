@@ -1,4 +1,4 @@
-import { Students } from '../src/domains/students'
+import { Students } from '../src/entities/students'
 import { StudentsRepository } from '../src/repositories/studentsRepository'
 
 export class StubStudentsRepository extends StudentsRepository {

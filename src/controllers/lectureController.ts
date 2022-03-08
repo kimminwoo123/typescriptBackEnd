@@ -4,8 +4,8 @@ import { check, body, query, validationResult } from "express-validator"
 import { LectureService } from "../services/lectureService"
 import { LectureRequest } from '../dto/lectureRequest'
 import { LecturesRepository } from '../repositories/lecturesRepository'
-import { Lectures } from '../domains/lectures'
-import { Instructors } from '../domains/instructors'
+import { Lectures } from '../entities/lectures'
+import { Instructors } from '../entities/instructors'
 import { InstructorsRepository } from '../repositories/instructorsRepository'
 
 const router = Router()

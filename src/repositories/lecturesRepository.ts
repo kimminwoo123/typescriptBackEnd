@@ -1,5 +1,5 @@
 import { createQueryBuilder, EntityRepository, Repository } from 'typeorm'
-import { Lectures } from '../domains/lectures'
+import { Lectures } from '../entities/lectures'
 import { LectureRequest } from '../dto/lectureRequest'
 
 @EntityRepository(Lectures)

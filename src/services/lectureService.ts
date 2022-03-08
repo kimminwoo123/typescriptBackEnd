@@ -1,11 +1,8 @@
-import { Router, Response, Request, NextFunction } from "express"
 import { LecturesRepository } from '../repositories/lecturesRepository'
 import { LectureRequest } from '../dto/lectureRequest'
-import { Lectures } from '../domains/lectures'
-import db from '../../db/pg'
-import { Instructors } from "../domains/instructors"
+import { Lectures } from '../entities/lectures'
+import { Instructors } from "../entities/instructors"
 import { InstructorsRepository } from '../repositories/instructorsRepository'
-
 
 export class LectureService {
         constructor(

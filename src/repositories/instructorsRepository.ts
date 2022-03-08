@@ -1,5 +1,5 @@
 import { EntityManager, EntityRepository, AbstractRepository, createQueryBuilder } from 'typeorm'
-import { Instructors } from '../domains/instructors'
+import { Instructors } from '../entities/instructors'
 
 @EntityRepository(Instructors)
 export class InstructorsRepository extends AbstractRepository<Instructors>{

@@ -2,9 +2,9 @@ import { StudentService } from '../src/services/studentService'
 import { StubStudentsRepository } from './stubStudentsRepository'
 import { StubLecturesRepository } from './stubLecturesRepository'
 import { StubCourseDetailsRepository } from './stubCourseDetailsRepository'
-import { Students } from '../src/domains/students'
-import { Lectures } from '../src/domains/lectures'
-import { CourseDetails } from '../src/domains/courseDetails'
+import { Students } from '../src/entities/students'
+import { Lectures } from '../src/entities/lectures'
+import { CourseDetails } from '../src/entities/courseDetails'
 
 describe('StudentService', () => {
     let studentService = new StudentService(new StubStudentsRepository(), new StubLecturesRepository(), new StubCourseDetailsRepository())

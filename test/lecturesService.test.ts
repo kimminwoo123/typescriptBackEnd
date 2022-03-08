@@ -1,12 +1,9 @@
 import { LectureService } from '../src/services/lectureService'
 import { LectureRequest } from '../src/dto/lectureRequest'
-import { StubStudentsRepository } from './stubStudentsRepository'
 import { StubLecturesRepository } from './stubLecturesRepository'
-import { StubCourseDetailsRepository } from './stubCourseDetailsRepository'
 import { StubInstructorRepository } from './stubInstructorRepository'
-import { Instructors } from '../src/domains/instructors'
-import { Lectures } from '../src/domains/lectures'
-import { CourseDetails } from '../src/domains/courseDetails'
+import { Instructors } from '../src/entities/instructors'
+import { Lectures } from '../src/entities/lectures'
 
 describe('LecturesService', () => {
     let lectureService = new LectureService(new StubLecturesRepository(), new StubInstructorRepository())

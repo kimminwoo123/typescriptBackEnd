@@ -1,5 +1,5 @@
 import { Repository, EntityRepository, createQueryBuilder } from 'typeorm'
-import { CourseDetails } from '../domains/courseDetails'
+import { CourseDetails } from '../entities/courseDetails'
 
 @EntityRepository(CourseDetails)
 export class CourseDetailsRepository extends Repository<CourseDetails> {

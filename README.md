@@ -2,8 +2,15 @@
 
 ## 목표
 
-- 도메인 주도개발(DDD)을 구현
-- unit Test 마스터
+- 객체지향 학습
+- DI 활용
+- DDD(Domain-Driven Design) 학습
+- unit test 학습
+- 최대한 라이브러리를 쓰지않은 프로젝트
+- frameWork 사용 지양
+- 온라인 강의 비즈니스 API 개발 (깃허브)
+- 아키텍쳐
+  ![Alt text](./Architecture.jpg)
 
 # 1. api 설계
 
@@ -76,7 +83,6 @@ Window 환경
 - postgresql 다운 (https://www.postgresql.org/download/)
 - database dbeaver 다운 (https://dbeaver.io/download/)
 - postgresql 설치
-- ts-node createTable.ts (테이블 및 데이터생성)
 - npm run start (서버 실행)
 - npm run test (테스트코드 실행)
 

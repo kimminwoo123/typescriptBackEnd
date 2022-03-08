@@ -1,5 +1,5 @@
 import { Repository, DeleteResult, EntityRepository, createQueryBuilder } from 'typeorm'
-import { Students } from '../domains/students'
+import { Students } from '../entities/students'
 
 @EntityRepository(Students)
 export class StudentsRepository extends Repository<Students> {

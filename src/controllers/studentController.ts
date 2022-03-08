@@ -5,8 +5,8 @@ import { StudentService } from "../services/studentService"
 import { StudentsRepository } from '../repositories/studentsRepository'
 import { LecturesRepository } from '../repositories/lecturesRepository'
 import { CourseDetailsRepository } from '../repositories/courseDetailsRepository'
-import { Students } from '../domains/students'
-import { Lectures } from '../domains/lectures'
+import { Students } from '../entities/students'
+import { Lectures } from '../entities/lectures'
 
 const router = Router()
 const studentService = new StudentService(new StudentsRepository(), new LecturesRepository(), new CourseDetailsRepository())
