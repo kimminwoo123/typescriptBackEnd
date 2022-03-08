@@ -86,12 +86,12 @@ Window 환경
 - npm run start (서버 실행)
 - npm run test (테스트코드 실행)
 
-2022/03/03
+<!-- 2022/03/03
 StudentsRepository에서 repository API가 재대로 작동하지 않음 - createQueryBuilder()를 사용하여 생성
 수강생 가입, 탈퇴, 수강신청 기능 개발
 TODO studentService test 코드작성, ErrorState 개발
 
-<!-- 2022/03/04
+ 2022/03/04
 typescript Jest config
 studentService test 코드작성완료
 TODO lectureService 개발
