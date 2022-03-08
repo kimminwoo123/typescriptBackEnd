@@ -91,7 +91,7 @@ StudentsRepository에서 repository API가 재대로 작동하지 않음 - creat
 수강생 가입, 탈퇴, 수강신청 기능 개발
 TODO studentService test 코드작성, ErrorState 개발
 
-2022/03/04
+<!-- 2022/03/04
 typescript Jest config
 studentService test 코드작성완료
 TODO lectureService 개발
@@ -105,4 +105,4 @@ TODO searchDetail test 코드 작성, lectureService create delete 개발
 2022/03/06
 lectureService create 개발
 TODO lectureService create Test 코드 작성, lectureService update, delete 개발
-lectureService update, delete 개발,테스트코드 완료
+lectureService update, delete 개발,테스트코드 완료 -->
