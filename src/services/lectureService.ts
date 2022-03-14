@@ -46,15 +46,20 @@ export class LectureService {
                         throw new Error('잘못된 강사 id입니다.')
                 }
 
-                const filterLecture: Lectures[] = []
+                const filterLecture: Lectures[] = await this.validationName(lectureList)
+
+                return await this.lecturesRepository.saveLectures(filterLecture)
+        }
+
+        private async validationName(lectureList: Lectures[]): Promise<Lectures[]> {
+                const result: Lectures[] = []
                 for (const lecture of lectureList) {
                         const checkName = await this.lecturesRepository.findByName(lecture.lectureName)
                         if (checkName == null) {
-                                filterLecture.push(lecture)
+                                result.push(lecture)
                         }
                 }
-
-                return await this.lecturesRepository.saveLectures(filterLecture)
+                return result
         }
 
         /**
@@ -62,12 +67,9 @@ export class LectureService {
          * 
          */
         public async update(instructor: Instructors, lecture: Lectures): Promise<Lectures> {
-                const checkId = await this.instructorsRepository.findByIdAndJoin(instructor.id)
-                if (checkId == null) {
-                        throw new Error('잘못된 강사 id입니다.')
-                }
+                const instructorAndLecture = await this.validationId(instructor)
 
-                const checkLectureId = checkId?.lectures?.filter(v => v.id === Number(lecture.id))
+                const checkLectureId = instructorAndLecture?.lectures?.filter(v => v.id === Number(lecture.id))
                 if (checkLectureId?.length === 0) {
                         throw new Error('잘못된 강의 id입니다.')
                 }
@@ -80,12 +82,9 @@ export class LectureService {
          * 
          */
         public async delete(instructor: Instructors, lecture: Lectures): Promise<Lectures> {
-                const checkId = await this.instructorsRepository.findByIdAndJoin(instructor.id)
-                if (checkId == null) {
-                        throw new Error('잘못된 강사 id입니다.')
-                }
+                const instructorAndLecture = await this.validationId(instructor)
 
-                const checkLectureId = checkId?.lectures?.filter(v => v.id === Number(lecture.id))
+                const checkLectureId = instructorAndLecture?.lectures?.filter(v => v.id === Number(lecture.id))
                 if (checkLectureId?.length === 0) {
                         throw new Error('잘못된 강의 id입니다.')
                 } else if (checkLectureId?.find(v => Number(v.studentCount) > 0) != null) {
@@ -93,5 +92,14 @@ export class LectureService {
                 }
 
                 return await this.lecturesRepository.deleteLecture(lecture)
+        }
+
+        private async validationId(instructor: Instructors): Promise<Instructors | undefined> {
+                const result = await this.instructorsRepository.findByIdAndJoin(instructor.id)
+                if (result == null) {
+                        throw new Error('잘못된 강사 id입니다.')
+                }
+
+                return result
         }
 }
