@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany, } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, } from "typeorm"
 import { Lectures } from './lectures'
 
 @Entity()
-export class Instructors extends BaseEntity {
+export class Instructors {
     @PrimaryGeneratedColumn({
         type: 'int',
     })

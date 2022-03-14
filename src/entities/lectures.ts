@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne, OneToMany } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm'
 import { Instructors } from './instructors'
 import { CourseDetails } from './courseDetails'
 
 @Entity()
-export class Lectures extends BaseEntity {
+export class Lectures {
     @PrimaryGeneratedColumn({
         type: 'int',
     })

@@ -1,9 +1,9 @@
-import { Entity, Column, BaseEntity, ManyToOne } from "typeorm"
+import { Entity, Column, ManyToOne } from "typeorm"
 import { Lectures } from './lectures'
 import { Students } from './students'
 
 @Entity()
-export class CourseDetails extends BaseEntity {
+export class CourseDetails {
     @ManyToOne(() => Lectures, lecture => lecture.id, { primary: true })
     lecture: Lectures
 
