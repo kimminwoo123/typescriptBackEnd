@@ -41,14 +41,9 @@ export class LectureService {
          * 
          */
         public async create(instructor: Instructors, lectureList: Lectures[]): Promise<Lectures[]> {
-                const checkId = await this.instructorsRepository.findById(instructor.id)
-                if (checkId == null) {
-                        throw new Error('잘못된 강사 id입니다.')
-                }
-
-                const filterLecture: Lectures[] = await this.validationName(lectureList)
-
-                return await this.lecturesRepository.saveLectures(filterLecture)
+                await this.validationInstructorId(instructor)
+                const filteredLecture: Lectures[] = await this.validationName(lectureList)
+                return await this.lecturesRepository.saveLectures(filteredLecture)
         }
 
         private async validationName(lectureList: Lectures[]): Promise<Lectures[]> {
@@ -67,7 +62,7 @@ export class LectureService {
          * 
          */
         public async update(instructor: Instructors, lecture: Lectures): Promise<Lectures> {
-                const instructorAndLecture = await this.validationId(instructor)
+                const instructorAndLecture = await this.validationInstructorId(instructor)
 
                 const checkLectureId = instructorAndLecture?.lectures?.filter(v => v.id === Number(lecture.id))
                 if (checkLectureId?.length === 0) {
@@ -82,7 +77,7 @@ export class LectureService {
          * 
          */
         public async delete(instructor: Instructors, lecture: Lectures): Promise<Lectures> {
-                const instructorAndLecture = await this.validationId(instructor)
+                const instructorAndLecture = await this.validationInstructorId(instructor)
 
                 const checkLectureId = instructorAndLecture?.lectures?.filter(v => v.id === Number(lecture.id))
                 if (checkLectureId?.length === 0) {
@@ -94,7 +89,7 @@ export class LectureService {
                 return await this.lecturesRepository.deleteLecture(lecture)
         }
 
-        private async validationId(instructor: Instructors): Promise<Instructors | undefined> {
+        private async validationInstructorId(instructor: Instructors): Promise<Instructors | undefined> {
                 const result = await this.instructorsRepository.findByIdAndJoin(instructor.id)
                 if (result == null) {
                         throw new Error('잘못된 강사 id입니다.')
