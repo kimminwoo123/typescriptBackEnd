@@ -42,19 +42,8 @@ export class LectureService {
          */
         public async create(instructor: Instructors, lectureList: Lectures[]): Promise<Lectures[]> {
                 await this.validationInstructorId(instructor)
-                const filteredLecture: Lectures[] = await this.validationName(lectureList)
+                const filteredLecture: Lectures[] = await this.validationLectureName(lectureList)
                 return await this.lecturesRepository.saveLectures(filteredLecture)
-        }
-
-        private async validationName(lectureList: Lectures[]): Promise<Lectures[]> {
-                const result: Lectures[] = []
-                for (const lecture of lectureList) {
-                        const checkName = await this.lecturesRepository.findByName(lecture.lectureName)
-                        if (checkName == null) {
-                                result.push(lecture)
-                        }
-                }
-                return result
         }
 
         /**
@@ -63,12 +52,8 @@ export class LectureService {
          */
         public async update(instructor: Instructors, lecture: Lectures): Promise<Lectures> {
                 const instructorAndLecture = await this.validationInstructorId(instructor)
-
-                const checkLectureId = instructorAndLecture?.lectures?.filter(v => v.id === Number(lecture.id))
-                if (checkLectureId?.length === 0) {
-                        throw new Error('잘못된 강의 id입니다.')
-                }
-
+                const lectureList = this.filteredLecture(instructorAndLecture, lecture)
+                this.validationLectureId(lectureList)
                 return await this.lecturesRepository.updateLecture(lecture)
         }
 
@@ -78,23 +63,45 @@ export class LectureService {
          */
         public async delete(instructor: Instructors, lecture: Lectures): Promise<Lectures> {
                 const instructorAndLecture = await this.validationInstructorId(instructor)
-
-                const checkLectureId = instructorAndLecture?.lectures?.filter(v => v.id === Number(lecture.id))
-                if (checkLectureId?.length === 0) {
-                        throw new Error('잘못된 강의 id입니다.')
-                } else if (checkLectureId?.find(v => Number(v.studentCount) > 0) != null) {
-                        throw new Error('수강중인 학생이 있습니다.')
-                }
-
+                const lectureList = this.filteredLecture(instructorAndLecture, lecture)
+                this.validationLectureId(lectureList)
+                this.validationStudentCount(lectureList)
                 return await this.lecturesRepository.deleteLecture(lecture)
         }
 
-        private async validationInstructorId(instructor: Instructors): Promise<Instructors | undefined> {
+        private async validationInstructorId(instructor: Instructors): Promise<Instructors> {
                 const result = await this.instructorsRepository.findByIdAndJoin(instructor.id)
                 if (result == null) {
                         throw new Error('잘못된 강사 id입니다.')
                 }
 
+                return result
+        }
+
+        private filteredLecture(instructorAndLecture: Instructors, lecture: Lectures): Lectures[] {
+                return instructorAndLecture.lectures?.filter(v => v.id === Number(lecture.id))
+        }
+
+        private validationLectureId(lectureList: Lectures[]): void {
+                if (lectureList?.length === 0) {
+                        throw new Error('잘못된 강의 id입니다.')
+                }
+        }
+
+        private validationStudentCount(lectureList: Lectures[]): void {
+                if (lectureList?.find(v => Number(v.studentCount) > 0) != null) {
+                        throw new Error('수강중인 학생이 있습니다.')
+                }
+        }
+
+        private async validationLectureName(lectureList: Lectures[]): Promise<Lectures[]> {
+                const result: Lectures[] = []
+                for (const lecture of lectureList) {
+                        const checkName = await this.lecturesRepository.findByName(lecture.lectureName)
+                        if (checkName == null) {
+                                result.push(lecture)
+                        }
+                }
                 return result
         }
 }
