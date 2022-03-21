@@ -1,9 +1,11 @@
 export class LectureRequest {
-    category: Category
-    searchWord: string
-    sortCondition: SortCondition
-    page: number | 1
-    pageSize: number | 10
+    constructor(
+        private category: Category,
+        private searchWord: string,
+        private sortCondition: SortCondition,
+        private page: number | 1,
+        private pageSize: number | 10
+    ) { }
 
     getOffset(): number {
         return (this.page - 1) * this.pageSize
@@ -23,21 +25,5 @@ export class LectureRequest {
 
     getSortCondition(): LectureRequest['sortCondition'] {
         return this.sortCondition
-    }
-
-    static create(
-        category: LectureRequest['category'],
-        searchWord: LectureRequest['searchWord'],
-        sortCondition: LectureRequest['sortCondition'],
-        page: LectureRequest['page'],
-        pageSize: LectureRequest['pageSize']
-    ) {
-        const request = new LectureRequest()
-        request.category = category
-        request.searchWord = searchWord
-        request.sortCondition = sortCondition
-        request.page = page
-        request.pageSize = pageSize
-        return request
     }
 }

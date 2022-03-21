@@ -16,7 +16,7 @@ describe('LecturesService', () => {
         it('조건에 따른 강의를 검색한다', async () => {
             // give
             expect.assertions(2)
-            const request = LectureRequest.create('web', '노드js', 'studentCount', 1, 3)
+            const request = new LectureRequest('web', '노드js', 'studentCount', 1, 3)
 
             // when
             const saveStudent = await lectureService.searchCondition(request)

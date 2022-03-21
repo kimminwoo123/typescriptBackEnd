@@ -36,7 +36,7 @@ router.get('/',
             const sortCondition = req?.query?.sortCondition as LectureRequest['sortCondition']
             const category = req?.query?.category as LectureRequest['category']
 
-            const request = LectureRequest.create(category, searchWord, sortCondition, page, pageSize)
+            const request = new LectureRequest(category, searchWord, sortCondition, page, pageSize)
 
             const result = await lectureService.searchCondition(request)
             return res.status(200).send(result)
