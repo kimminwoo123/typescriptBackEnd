@@ -64,6 +64,19 @@ declare global {
         lectureCreateDate: LectureDto['lectureCreateDate']
         instructorName: InstructorDto['instructorName']
     }
+
+    type ErrorState = LectureIdError | LectureOpenError
+
+    type LectureIdError = {
+        result: 'fail'
+        reason: '잘못된 강의 id 입니다.'
+    }
+
+    type LectureOpenError = {
+        result: 'fail'
+        reason: '오픈 되지 않은 강의 입니다.'
+    }
 }
+
 
 export type { LectureListResult }
