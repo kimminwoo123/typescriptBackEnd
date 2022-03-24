@@ -23,17 +23,17 @@ export class LectureService {
          * 
          */
         public async searchDetail(id: Lectures['id']): Promise<Lectures> {
-                const checkId = await this.lecturesRepository.findById(id)
-                if (checkId == null) {
+                const lecture = await this.lecturesRepository.findById(id)
+                if (lecture == null) {
                         throw new Error('잘못된 강의 id 입니다.')
                 }
 
-                const searchResult = await this.lecturesRepository.findDetailSearch(id)
-                if (searchResult == null) {
+                const lectureSearchResult = await this.lecturesRepository.findDetailSearch(id)
+                if (lectureSearchResult == null) {
                         throw new Error('오픈 되지 않은 강의 입니다.')
                 }
 
-                return searchResult
+                return lectureSearchResult
         }
 
         /**
@@ -95,13 +95,17 @@ export class LectureService {
         }
 
         private async validationLectureName(lectureList: Lectures[]): Promise<Lectures[]> {
-                const result: Lectures[] = []
+                let result: Lectures[] = []
                 for (const lecture of lectureList) {
-                        const checkName = await this.lecturesRepository.findByName(lecture.lectureName)
-                        if (checkName == null) {
+                        const finedLecture = await this.lecturesRepository.findByName(lecture.lectureName)
+                        if (this.lectureDuplicateCheck(finedLecture)) {
                                 result.push(lecture)
                         }
                 }
                 return result
+        }
+
+        private lectureDuplicateCheck(finedLecture: Lectures | undefined): boolean {
+                return finedLecture == null
         }
 }
